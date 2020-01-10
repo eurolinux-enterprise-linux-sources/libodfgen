@@ -1,0 +1,1906 @@
+2013-05-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [da4b4ba96d56f5557dc70d81443ef380c4e11fd2]
+
+	Bump version
+
+
+2013-05-15  Laurent Alonso  <laurent.alonso@inria.fr>  [4b6cd1ea149648f710a0bab3b213e308953cda1d]
+
+	Border and column separator changes
+
+	Allow to define border sizes independently
+	Allow to specify separator lines between colums
+
+2013-05-10  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [c192984d25ebbd287d8eea97eccfc630a57d5e26]
+
+	Make Michael Stahl happy (one library at the time)
+
+
+2013-05-07  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [1a2206c74bb416fc708ab519f453fd3d7002d441]
+
+	A bit more of automatism in pc file generation
+
+
+2013-05-03  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [070ab6e9cb90ac7e4dc44b65099ebd6cbe6d9f25]
+
+	Unbreak build
+
+
+2013-05-02  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [0fc8b5b73cb4f7060d7bea349b81cbd0f13675c4]
+
+	libwpd already does this conversion, so don't dupplicate
+
+
+2013-05-02  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [1f5003a9a7adba5920c11010926d204ba03d69be]
+
+	Fix android build
+
+
+2013-05-02  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [7fd0fbe2e31a744f881aad0fc09ff3c545db5014]
+
+	Fix some misstatements
+
+
+2013-05-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [d4ef7b96c622cbd5049d003428beed5ce7d298e9]
+
+	Silence some warnings
+
+
+2013-05-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [18d2c178fc8b1a176449fdd599d207864b5dcbcd]
+
+	And a further cleanup
+
+
+2013-05-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [e92f912188253d7d2a983e041c28fec02bb47fbc]
+
+	Miscellaneous Windows fixes
+
+
+2013-05-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [19e9ad44f0ff77a36d4d1c38fbbc360538918c49]
+
+	Make libodfgen -Weffc++ clean
+
+
+2013-05-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [1d9ed6a4012434525479c848f2dd70b7e4e09cd5]
+
+	Don't default to Weffc++ for the while
+
+
+2013-05-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [03aeb8bfd82eb97ed2783d201ed8975b4fd1675a]
+
+	Some more cleanup and LO backports
+
+
+2013-05-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [38bfcaba0d21b63a5eaf76258bd5833915fa62c4]
+
+	Some more cleanup
+
+
+2013-05-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [2c6a4c15cc2cfd1c02de8fe06f67e54b007fd906]
+
+	Some warnings + fixes
+
+
+2013-04-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [874b04cf520a1d624a312339c5ce4b8c7a45ca0d]
+
+	Use AM_CXXFLAGS
+
+
+2013-04-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [92dbc36a0ec62face67ce3c6d140f695d2bcdb67]
+
+	Adapt slightly the msvc6 project
+
+
+2013-04-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [fe208bcfac82772bdfeaef0bc7cc2b22bc73b53c]
+
+	We don't actually require the stream implementation here
+
+
+2013-04-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [42f6c4ec11127798dd5857c8433ec5719356ac46]
+
+	No need to keep packaging files in the tree
+
+
+2013-04-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [20d3e89536b00e66b5b3af6e4edda251366b7b84]
+
+	simplify the directories
+
+
+2013-04-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [95af373e79278e69fa3b5ef222ef80d255f4bc10]
+
+	libodfgen pure
+
+
+2013-04-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [b637e44afc1696ad8a5bfc3745dfe2947c6da954]
+
+	Work towards libodfgen
+
+
+2013-04-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [f519b730b69d532af5269575f2db2ba2c7d03047]
+
+	filter -> libodfgen
+
+
+2013-04-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [4e25494d9923ac3fbb919eae8fe0bcae31ba06aa]
+
+	By agreement of all contributors, dual-licensing under MPL2+ and LGPL2.1+
+
+
+2013-03-11  Laurent Alonso  <laurent.alonso@inria.fr>  [1d04e8d6aa5c14f0fd48e991f89a7018559f7282]
+
+	Improve lists generation
+
+
+2013-03-11  Laurent Alonso  <laurent.alonso@inria.fr>  [9f9c4dcb5898d27293d39941509ba1732b981bbd]
+
+	MWAW: allow to generate surface splines and polygons
+
+
+2013-03-11  Laurent Alonso  <laurent.alonso@inria.fr>  [5bb892269d0e27ccbc4200011107efb723efeb54]
+
+	Support some new parameters
+
+
+2013-02-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [4139a7c44fcb7a441ce8a0065a8be4b019381aba]
+
+	We need to escape special characters in slide names
+
+
+2013-02-19  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [09f709c2ddb4cfb56e6d6621b6d933b68c485c78]
+
+	Allow specifying of page names
+
+
+2013-02-19  Norbert Thiebaud  <nthiebaud@gmail.com>  [c1a2d2ff07cdcf27ea2999e84d34f926f2c7129f]
+
+	coverity#983356 ressource leak
+
+	Change-Id: Idcc2d548363ddab04dd8acaa1dfb854a19ca47ef
+	Reviewed-on: https://gerrit.libreoffice.org/2200
+	Reviewed-by: Fridrich Strba <fridrich@documentfoundation.org>
+	Tested-by: Fridrich Strba <fridrich@documentfoundation.org>
+
+2013-02-18  Laurent Alonso  <laurent.alonso@inria.fr>  [64166d1a0f60676918c61ff9dc95747c7a6ef5ed]
+
+	Improve list code
+
+
+2013-01-18  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [87d033a7b09b5ba89cae69c947858e9bfbcf8722]
+
+	Fix build with newer autotools
+
+
+2012-08-23  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [95474b69d8926462f020daad4714803f9cb22fbb]
+
+	Iterate the utf8 correctly + handle tabs too
+
+	Change-Id: Ie6a4750ebd04e3b1ed8ad0985e141b6ff2e65e98
+
+2012-08-23  Brennan Vincent  <brennanv@email.arizona.edu>  [c12af04c901de575eb5bc0041160be173ee9ba80]
+
+	Move writerperfect newline-handling logic to OdgGenerator::insertText
+
+
+2012-08-23  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [b89315823e0d9253a16b40f76556e74a27b4c35a]
+
+	astyle
+
+
+2012-08-14  Brennan Vincent  <brennanv@email.arizona.edu>  [e0019c3d8969f4c574ae35353c8ef4e2d3a698ff]
+
+	Add support for draw:color-mode and draw:(red|green|blue) in drawGraphicObject
+
+	Signed-off-by: Fridrich Štrba <fridrich.strba@bluewin.ch>
+
+2012-08-14  Brennan Vincent  <brennanv@email.arizona.edu>  [e722e72ad91bb36879bd50e00e55af40a9812734]
+
+	Removed unused function (can't compile in debug mode otherwise)
+
+	Signed-off-by: Fridrich Štrba <fridrich.strba@bluewin.ch>
+
+2012-08-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [b7ad569167fa6eb064bc3a7efbcc8f44a5000166]
+
+	Add vss2odg to extract Visio stencils
+
+
+2012-07-31  Laurent Alonso  <osnola@loria.fr>  [8115c9bd00c9ea362496df5b95aa44074d67f067]
+
+	Miscellaneous improvements in MWAW and cmdline
+
+
+2012-07-04  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [a078a035356891d491e395f1fa0e64cdf93884fe]
+
+	Trying to get the windows build of shared libwriterperfect right
+
+
+2012-07-04  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [1f58164899770ca4591954a174a019f4994c6863]
+
+	Increase warning level
+
+
+2012-07-04  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [4c1d26844e669b596f80cdb91c934a755f52af01]
+
+	Bump version
+
+
+2012-07-04  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [205148937d4ae62b2ccee11ab64c47ae9bd4abe4]
+
+	Build the common filter logic as shared library
+
+
+2012-07-04  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [afa3f4bdbddfdafb6aae26b9ac1e9d89497344f6]
+
+	Adding new directories
+
+
+2012-05-30  Brennan Vincent  <brennanv@email.arizona.edu>  [cfb73d08684dc867e13f6e1d39636e1bdd92258e]
+
+	Handle opacity in gradients
+
+
+2012-05-15  Tomas Chvatal  <tchvatal@suse.cz>  [23ad8ccd133e6dd12a3c5c42d22b38f09ef5f0ab]
+
+	Use shared_ptr everywhere instead of sharedptr
+
+
+2012-05-15  Tomas Chvatal  <tchvatal@suse.cz>  [c915e590b4eebf85adc965cd4901608d63e0d21b]
+
+	Add safeguards to prevent unwanted values on shared-ptr.
+
+
+2012-05-15  Tomas Chvatal  <tchvatal@suse.cz>  [5509cffc8bc3df94400af390f8359dbb0af6c093]
+
+	Print shared ptr are we checking
+
+
+2012-05-15  Tomas Chvatal  <tchvatal@suse.cz>  [36d7a344cc9456fe4de5eebf3cdb8966c08727ec]
+
+	Use posix comparsion.
+
+
+2012-05-15  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [9f999d9c4bc4d25e6a788918251834fe4cd0939c]
+
+	State which shared_ptr one uses
+
+
+2012-05-07  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [8dd8ccc55cb8f2ff8cd3d8f25465dd794a527b4f]
+
+	Whitespace cleanup
+
+
+2012-05-07  Laurent Alonso  <laurent.alonso@inria.fr>  [e845e24a30ccbd24b33efee4623cea6150f5b303]
+
+	Add possibility of generating foot/endnotes with text labels
+
+
+2012-04-19  Laurent Alonso  <laurent.alonso@inria.fr>  [990711d103e82ff236cf6ee4c7e998eeabe11396]
+
+	Adding libmwaw support
+
+
+2012-04-19  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [e6cf167d4a6022dc895d82899544b35a88b36a47]
+
+	Add cmx2odg
+
+
+2012-04-15  Laurent Alonso  <laurent.alonso@inria.fr>  [45c148ec142bb6a7c7805e71d98701f19da83f07]
+
+	Check for frame borders and frame background
+
+
+2012-04-09  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [10ed960078177315c26a35b7a334be4de9d437cc]
+
+	Write out the groupping
+
+
+2012-04-08  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [3f72c5c1f826c794feb9097ac74be8e5971aae5b]
+
+	Allow svg preview for embedded WPG
+
+
+2012-04-08  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [af6b848c9adc3e5401c4196664811f421e3a7669]
+
+	Allow conversion of embedded images to another binary image format
+
+
+2012-04-03  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [032468127f7be51471e54abe45e2ecff031c1f25]
+
+	Clang warnings/errors (patch Laurent Alonso)
+
+
+2012-03-13  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [27bd1e54ce3c563297bc244460ec2e9144b6475c]
+
+	C & P error
+
+
+2012-03-09  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [b6bf6d04589b6e7fb409e368c80cfa5b70254553]
+
+	Use information about position and offsets of the bitmap fill
+
+
+2012-03-09  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [431a49dca55e0088045293d5ba33e8802ecc3371]
+
+	Cubic and quadratic bezier bounding boxes
+
+
+2012-03-02  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [05b11c918183324645b070cc9d575095ec2cb978]
+
+	Initial support of bitmap fills in OdgGenerator
+
+
+2012-03-02  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [cf7abf415afa76f70a7ed62616c4915b79d70b36]
+
+	One more unused removal from LibreOffice
+
+
+2012-03-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [729d8babe0762f98de7a8d907413a8a2325b3b87]
+
+	Extend the gitignore file
+
+
+2012-03-01  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [d0e10c9cc0e45fe9eecdb883039852ffdb7478b8]
+
+	Whitespace changes after backport from LibreOffice
+
+
+2012-03-01  Elton Chung  <elton@layerjet.com>  [f42155c11c09a49197dacbe28569b7b103e76f19]
+
+	Get rid of size() == 0
+
+
+2012-03-01  Marc-André Laverdière-Papineau  <marc-andre@atc.tcs.com>  [947b9d625f7775f47af83be8348bf58ebcd7545a]
+
+	removed some dead code
+
+
+2012-03-01  Mariusz Dykierek  <mariuszdykierek@gmail.com>  [83c242424319dd6cecf11afc6c59025792ad91c7]
+
+	remove extraneous qualifiers that break some compilers
+
+
+2012-03-01  Julien Nabet  <serval2412@yahoo.fr>  [2da50832da7e2a9106b861a57b3655b94d1f1b36]
+
+	Some cppcheck cleaning
+
+
+2012-03-01  julien  <julien@julienPC>  [055b7afff4c11eac67e4b69f715b541a14aa2b5e]
+
+	Some cppcheck cleaning
+
+
+2012-01-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [c9c52c714789bc2f5c8d3a0515a0fb6b9730e8d4]
+
+	Oops, typo
+
+
+2012-01-30  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [1aba581f7685f5cc834fa5e345207d9d20ee46fb]
+
+	Initial support for quadratic beziers
+
+
+2012-01-27  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [a890535cd067ca9fb6e787803a9ad269b9ef1a08]
+
+	Fix the buildnumber.sh script
+
+
+2012-01-27  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [516b5b71677b94468273e8e90fafae8d7ae3f1c1]
+
+	Some more rpm fixups
+
+
+2012-01-27  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [89dc1b67cbe8c41aa7d7404a9e20136ea55020fa]
+
+	fix the spec file too
+
+
+2012-01-27  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [69eb44b9e44d3f6355ac1f689ae364ba03f85279]
+
+	Build pub2odg if libmspub is found
+
+
+2012-01-27  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [7eea120dd1b18d8eda4e2f466b9cd99f17d157ec]
+
+	Fix windows/mingw build of cdr2odg
+
+
+2012-01-26  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [c2c72c2367f9729ff57b4cb06f6a0d52f8fd25ca]
+
+	Fix crashes due to inexisting attribute
+
+
+2012-01-16  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [e1b20599e33209fe3f0d3cd904f651703af310d6]
+
+	Implementing text rotations
+
+
+2012-01-13  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [77ffa110c8cde884b01dc6ef310eec470ad41f85]
+
+	Implement flips and rotations of raster images in the OdgGenerator.cxx
+
+
+2012-01-13  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [2d061be7765d7c3054559b36d3e41af4153fa3f1]
+
+	Adapt to the more intuitive libvisio/libwpg API
+
+
+2012-01-12  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [0e90196d0b07d5ae88f5da4f6fabea29c9d6df7f]
+
+	Some details of style
+
+
+2012-01-12  Laurent Alonso  <laurent.alonso@inria.fr>  [ea6fc210f3182f0a2a6b21c75c111fa97f5db3a5]
+
+	Don't segfault when unable to save the file
+
+
+2012-01-12  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [59f1029d2bb91ecbd831da5c9a88bb7144b7511a]
+
+	Logical error in writerperfect
+
+
+2012-01-12  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [2ba28ad5b1b956537d55bc8e16e3bda4151b6f82]
+
+	ignore more files
+
+
+2012-01-12  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [572ba1b06c8139986499501d539d3ae2feec3beb]
+
+	Consider the style:mirror property
+
+
+2011-12-06  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [96960cc52207c1aa8aa30fec17a8656469fd450d]
+
+	Allow inserting of ole objects into draw documents
+
+
+2011-12-05  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [27ca88766dad5b47f1c39e723ce6daff1b7e1af0]
+
+	Add support for cdr2odg if libcdr-0.0 is present
+
+
+2011-11-03  Laurent Alonso  <alonso@loria.fr>  [d4161d9e566f98fbc322a9e25da4d45337bf9476]
+
+	Add possibilty to embed ole object and to pass paragraph borders
+
+
+2011-10-28  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [586c503b784092eeda38a01319912c432b17eacf]
+
+	Removing unnecessary header
+
+
+2011-10-28  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [143c6e2f103d34d29a2dcb82355c762411956991]
+
+	Modelines for this file too
+
+
+2011-10-28  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [45712b365dbbfd5b4c009822e429d0e702dba932]
+
+	Fix a memory leak with opacity gradients
+
+
+2011-10-28  Laurent Alonso  <alonso@loria.fr>  [fa9978d748dea690ef04e7c7e99709a89814d656]
+
+	Build changes due to the use of shared_ptr
+
+
+2011-10-28  Laurent Alonso  <alonso@loria.fr>  [348212be7214c563b1f8e629fdd3bf6c98fde07a]
+
+	Use shared_ptr to avoid leaks
+
+
+2011-10-27  Caolán McNamara  <caolanm@redhat.com>  [c3c6910e2bab719a50d23f66b10d169a8be675f8]
+
+	fSectionSpaceAfter is unused
+
+
+2011-10-27  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [de7a13f10a470e9d4852aa4e6f06e2e3c6cf00f3]
+
+	Syncing with libreoffice in-tree writerperfect
+
+
+2011-10-26  Tor Lillqvist  <tml@iki.fi>  [9ee18923be8d660a6f3cdb5eceb64917c4fda83a]
+
+	No struct lconv::decimal_point in Android's libc
+
+
+2011-10-25  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [1b14814d3a9a9ff357a69e52a4a3008fc4acadcc]
+
+	Some little simplifications
+
+
+2011-10-25  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [5fa427d648dcab2e47d06385a3787f22b4b2f447]
+
+	Formating fix
+
+
+2011-10-25  Tibby Lickle  <tibbylickle@gmail.com>  [0db85966b11fc21d2aa0f2e4b95551ae37c42a89]
+
+	Added line marker support
+
+
+2011-10-25  Laurent Alonso  <alonso@loria.fr>  [6d33e54f27200a059a10580330119751d7d6eaad]
+
+	Fix a typo + don't open a row or cell if no table is started
+
+
+2011-10-25  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [7b055276cfa0484d78ed03b01bbb5d8669d04395]
+
+	Add Emacs and Vim modelines
+
+
+2011-10-25  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [941d13c14d2ef45b2d211d093bab8d46d8236500]
+
+	Prefer pre-increment in for loops
+
+
+2011-10-25  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [b83bd842c6b06685b7a5f5857bbebe5bc1178d3d]
+
+	White-space change to be consistent with our coding style (astyle -b -k3 -y -n -t -r *.?xx)
+
+
+2011-10-23  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [15520476319aa2b91db58c0ed2a29a4f9d6ec7d7]
+
+	oops, forgot to add this one
+
+
+2011-10-23  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [f08240bb7b8e5786bb1ec8e974912413c1721ad0]
+
+	Some formating changes
+
+
+2011-10-23  Laurent Alonso  <alonso@loria.fr>  [eac1b3ba958d5da396c759a145962a536d82517b]
+
+	Handle styles in a more intelligent way
+
+
+2011-10-15  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [7fe7c236cc0be74cc0cf0a02075dcdf5501900c7]
+
+	Try to handle more text-box properties
+
+
+2011-10-15  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [4f34d4388195084cec387b5b5acd2b6dc2854f7f]
+
+	Whitespace change to increase visibility
+
+
+2011-10-12  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [31e46777dcb794e746a68dfff02c2924fd5dd7b6]
+
+	write out the text margins in text block
+
+
+2011-10-04  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [7039e07ac71929c844c44ff7e346a5f545dc5a24]
+
+	Make draw:stroke==solid default for missing draw:stroke element
+
+
+2011-10-04  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [694fe11d7a1f71cb51927e693c37e8d0538dd8fd]
+
+	Allow hairlines svg:stroke-width==0 and handle special cases in the libraries themselves
+
+
+2011-09-29  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [1505b2b56c648d6cfddea7e44bcfdf27f6ffe76d]
+
+	Adapt to the new way of passing dash-arrays from libvisio, still need to adapt libwpg
+
+
+2011-09-28  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [70dca615949bd5d839d401c2053a864b7d0b0c66]
+
+	Remove one warning
+
+
+2011-09-28  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [2a19d509e86604adacb2ecf89823ea35c2d15cc7]
+
+	Fix a typo
+
+
+2011-09-28  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [4242979046bd12dd4ee27e18583d43b7b275c19c]
+
+	Put back accidentally deleted stuff
+
+
+2011-09-28  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [23a489d70eefd0ea293f2262ea8f4c1fb38e66d1]
+
+	Stuff the NEWS a bit
+
+
+2011-09-26  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [ef6969464dfaf60c38dda41745b356d24da6474e]
+
+	If gradient type is not specified, assume linear
+
+
+2011-09-26  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [a7ac874be39b29931687a0cbe1aaa90a2658beed]
+
+	If requested to use libwpg, use it indeed
+
+
+2011-09-20  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [6eebeb4267be484086c33e9f08f4efd05dca74a3]
+
+	A bit more defensive programming
+
+
+2011-09-14  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [2eb5fd02a050191c038b81e0a0784d24a55ffef6]
+
+	Some uniformization and removing of distcheck errors
+
+
+2011-09-14  Tomas Chvatal  <tchvatal@suse.cz>  [9f5398f4adbad221ce528c8f27190d7c1f5baaa4]
+
+	Use automagic decision based on libraries presence if with/without-feature is not specified.
+
+	Signed-off-by: Tomas Chvatal <tchvatal@suse.cz>
+
+2011-09-04  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [d06a831c1bafda30166cb41dfab0858f696e7c10]
+
+	Output the Font styles in office:font-face-decls
+
+
+2011-09-03  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [f019f6eb3ae03d51257d8e0742a9e5464fe9c9aa]
+
+	Get rid of some warnings
+
+
+2011-09-03  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [81f3856bafacf869bf3e70eaec5bf3e439d77200]
+
+	Assure xml tag at the beginning of an xml file
+
+
+2011-09-03  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [3bc9b5e328a127c4d6f06ed7b1d73d5e8fbd5abe]
+
+	try to use text properties
+
+
+2011-09-03  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [1a5eaa45ad8cea6fa5fbd5432a0bfa9ddae04793]
+
+	Actually show some text
+
+
+2011-09-03  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [3897bc236f7d7cd52b67c33bf88d462da5752b73]
+
+	Initial work on text implementation
+
+
+2011-08-31  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [0d9cce551f730a87e4b46077b1cb61fb0751a5a1]
+
+	Writerperfect does not put copyright or license headers into build files
+
+
+2011-08-31  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [efc942b48bb1e9db496f297deb73785191286032]
+
+	Bump version and fix description
+
+
+2011-08-31  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [c0048358078d9e39692daebf1bd187cbeebd942e]
+
+	Fix logical issues in configure.ac and also some distcheck errors
+
+
+2011-08-31  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [c1f524967a97daa6d7c2466a38db290d289c7d92]
+
+	Fix whitespace errors
+
+
+2011-08-31  Tomas Chvatal  <tchvatal@suse.cz>  [b53a56e240cc6eba65a4ed1336cb944d995d96c4]
+
+	Update the buildsystem based on libvisio approach.
+
+	Signed-off-by: Tomas Chvatal <tchvatal@suse.cz>
+
+2011-08-19  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [41e32a6fbe65a79dd2ea4e30b46200cba16526ff]
+
+	Add possibility to build wps2odt in writerperfect too
+
+
+2011-07-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [ea748adb0555abbadd6ed7c07eb09837785dafa1]
+
+	Work around a bug in libwpd's WPXPropertyList::operator=
+
+
+2011-07-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [a19aae818e924f1a27e87e8746fb0d748509e8cd]
+
+	Add shadow support
+
+
+2011-07-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [1b462082c759c794a97ca0c750fb41c647eaf0b7]
+
+	Don't output opacity gradients if the stops are completely opaque
+
+
+2011-07-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [efc4050a9a33f199b59dffde7da596d6677c5c04]
+
+	Try to handle correctly transparency gradients and different stroke properties
+
+
+2011-07-15  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [afece0815d7ab86e73f3c9770b2febd1595fb31b]
+
+	Fix a bug in bounding box computing
+
+
+2011-07-15  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [c98504e2a1c0b79eb4d17a62346849c1a0ce8507]
+
+	Bounding box algorithm needs angle in radians
+
+
+2011-07-15  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [0316dc245f7d9113da4fc5bacb043db6ad8448d1]
+
+	Trying to use the svg:fill-rule in ODG
+
+
+2011-07-06  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [853fdb131f44413eb375814339608f8b8275d2c4]
+
+	Some more ODG style mappings that LO understands and displays properly
+
+
+2011-07-06  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [3c6eab04a78cabc7f82fad5e5278cf1aabbdd4ea]
+
+	Trying to work around some inperfections of odf
+
+
+2011-07-05  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [ff714212b57680b15dd007e48c54a37c0884ff59]
+
+	Handle svg and odf expressions of gradients
+
+
+2011-06-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [fad80bdde8468c68df3042f1e3b8959348f51923]
+
+	Be gracious with broken paths
+
+
+2011-06-21  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [43868ae9ac3cff9dad6cc5a81c754b798c2c4dee]
+
+	White-space cleanup
+
+
+2011-06-21  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [f5fb7ba8088e51653ce0118340c320798d265816]
+
+	Add bounding box of an elliptical arc and output the 'A' element
+
+
+2011-06-14  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [dc681e04f4d79e4da2fd17a71048882523a44c93]
+
+	vsd2odg is handling Visio Documents
+
+
+2011-06-10  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [af608c3a3cba5f9cd77a6d81736c160c577fbeb9]
+
+	For the time being, approximate elliptic arc with a line
+
+
+2011-06-09  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [abac3acbb9011ec49001816eb8d7eb416f8202b1]
+
+	update .gitignore
+
+
+2011-06-09  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [2d2c145e8c2d9bd93211785340f3c9f306107c51]
+
+	Workaround a limitation of draw
+
+
+2011-06-09  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [65d8f20a799ddd90eebab1643d8449650fe687fd]
+
+	Add the posibility to build vsd2odg if asked nicely and if libvisio is present
+
+
+2011-06-08  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [5619c55c724f5bf5200eb35dd3adbe4120dad34e]
+
+	Allow generation of multipage draw documents
+
+
+2011-05-09  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [e26db14773e926a4e96a53df8841bf3bb17b67a1]
+
+	s/NULL/0/g
+
+
+2011-05-06  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [ec71c0c2e7d6cb973a20712e530c360bddad2abf]
+
+	fix some warnings and remove 2 unused files
+
+
+2011-05-06  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [8e78fad0a612c8c57a21045a90bb61666666ac1c]
+
+	Use function pointers instead of objects
+
+
+2011-05-06  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [e903701fa151e2a481163058aee839cbe86cfe7c]
+
+	remove any reference to libwpg in OdtGenerator.cxx
+
+
+2011-05-06  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [6f13b001fc90dd81accbeccc7c4856898bbcfde9]
+
+	Make handler for embedded objects pluggable
+
+
+2011-05-05  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [0b05066e5e1f52ffe0d6aba7880b924cb7ecd5d3]
+
+	Don't inline future api functions
+
+
+2011-05-05  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [c220840c62bf943c4e078e8872b37d7486a65d76]
+
+	Refactoring writerperfect in view of using it as a shared library
+
+
+2011-05-03  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [e667905e22c0fa7c38b6e805518c6616cde4e0e3]
+
+	Revert "try to round so that 32-bit and 64-bit produce similar results"
+
+	Because it does not help :)
+
+	This reverts commit d4ecf631c0cd986ce864d5eaff5c269d86fd6f24.
+
+2011-05-03  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [d4ecf631c0cd986ce864d5eaff5c269d86fd6f24]
+
+	try to round so that 32-bit and 64-bit produce similar results
+
+
+2011-01-23  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [8315a41debcbb3c2f3beab50c8cc58d482fb315a]
+
+	Fix some warnings
+
+
+2010-12-06  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [021b9979672aa701edd6ce3afa9e102bb796271c]
+
+	Fix the spec file and its generation so that it works
+
+
+2010-11-16  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [23bc2e27a95a259d06f6cd43caf6e9c5a875efb4]
+
+	Small addition
+
+
+2010-11-16  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [91cb2d6a37501249b05a10677584921189fad66b]
+
+	Prepare news in view of 0.2.0 release
+
+
+2010-11-10  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [b4586b1d97f36bc4033da6a7549bbdd6c69d5a38]
+
+	Autogenerate ChangeLog at make dist time + rename CHANGES to NEWS
+
+
+2010-11-09  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [719f36cf66e9f3f75f99beb15a9566be93b77247]
+
+	Fix some executable permissions
+
+
+2010-11-06  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [3f228023a33a6fa439b3b273d7a29f5a20f6fd30]
+
+	Remove obsolete type
+
+
+2010-11-02  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [b2e9b9c7b184703b68179cc49011fc8935bf6996]
+
+	Adapt to the insertSpace callback and fix some white-space issues
+
+
+2010-10-19  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [907491666dea4c12e3473121239c5484b3877b6c]
+
+	Make valgrind happy with more headers of the same type
+
+	Nevertheless, this is not solving in any way the inconsistency we have in libwpd
+
+2010-10-19  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [c741bf12c97012d4ebc6a5c643b2204af5d5aba9]
+
+	Use const WPXString & instead of const char * wherever it is possible
+
+
+2010-08-15  William Lachance  <wrlach@gmail.com>  [544a342a40f5191736fff5f08abee898964ddc9c]
+
+	Updates for libwpd insert field changes
+
+
+2010-07-21  William Lachance  <wrlach@gmail.com>  [cf2e5ca86baed9653c4f1656a508d60fbc38ee42]
+
+	Support different types of numbering styles (italics, numerals, etc.)
+
+
+2010-07-21  William Lachance  <wrlach@gmail.com>  [58832b875510444e638382d0cfe88bda27300a70]
+
+	If page starts with a list element, don't associate master page with next para
+
+	Since paragraphs are now associated with master page styles, we need to
+	do this or else we'll have an unwanted page break in this case.
+
+2010-07-21  William Lachance  <wrlach@gmail.com>  [e18e16be8e30b5611e237875df8fbd44e995d4b8]
+
+	Support page renumbering
+
+
+2010-07-13  William Lachance  <wrlach@gmail.com>  [b62a0e282deccc24886f4639e59b8c89f52a8b9d]
+
+	Basic page numbering support (in line with libwpd changes)
+
+
+2010-07-13  William Lachance  <wrlach@gmail.com>  [2e96793eb27bab64f2be39615e4e679f7057546f]
+
+	Ignore object files as well
+
+
+2010-07-13  William Lachance  <wrlach@gmail.com>  [0838f44d06bb115c7268adcb74e6e5f6840bcc1b]
+
+	Bulk move .cvsignore to .gitignore
+
+
+2010-06-22  Fridrich Strba  <fridrich.strba@bluewin.ch>  [4fe9ee11284636f76cb52b9722437e7422aff847]
+
+	Adapt to libwpd changes
+
+
+2010-06-10  Fridrich Strba  <fridrich.strba@bluewin.ch>  [a2a0a6c204c08a2fab5f043a9b15943dd5f274f5]
+
+	Adapting to the recent libwpg interface changes
+
+
+2010-06-08  Fridrich Strba  <fridrich.strba@bluewin.ch>  [6b6c5b761497cc6d8932db52cd5cd07db6ed4870]
+
+	Adapting to recent changes in libwpg api
+
+
+2010-06-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [5936e1ab807eaaa5b0ee817eaa3d49c590e5c649]
+
+	Trying to generate correct elliptical arc in odg
+
+
+2010-06-04  Fridrich Strba  <fridrich.strba@bluewin.ch>  [98b7abbaba8ce780df84ed779d5aab705cc87e08]
+
+	Adapting to the new callbacks in libwpd
+
+
+2010-06-04  Fridrich Strba  <fridrich.strba@bluewin.ch>  [7e9469d7a8f861a2a05f11cf87b04f391ccb1c20]
+
+	Empty gradient array means that object is not filled
+
+
+2010-06-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [5036b7945392fba0eb773d8b14fac1be7d14be7d]
+
+	addapting to API changes in libwpd
+
+
+2010-06-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [796c7660b9b125565cf2af2dabf1789d40d234c8]
+
+	Putting the right elements into the right streams for ODG
+
+
+2010-06-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3fff7120fe6f82d5fb6756f820ff3f6f0fd6b51b]
+
+	Some more code of separating different streams
+
+
+2010-06-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [8103092b084d1f70e211d0f93071f0f18834e170]
+
+	trying to separate ODG streams
+
+
+2010-06-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [d4b6365fc1c10663bc220450ae71302e8d50d112]
+
+	use draw:transform instead of svg:transform
+
+
+2010-04-14  Fridrich Strba  <fridrich.strba@bluewin.ch>  [242df9e644f501a9090dbeae2cb9e753ccbd5d5d]
+
+	actually allow to build with libwpg :)
+
+
+2010-04-13  Fridrich Strba  <fridrich.strba@bluewin.ch>  [d856fb494a3f07898b94f2ec2b3b6a2d84bb642e]
+
+	Allow build wpg2odt when required libwpg is not present
+
+
+2009-09-14  Fridrich Strba  <fridrich.strba@bluewin.ch>  [62f4f6a4bcbbd3e522a9e268dfb9d247db3a34e7]
+
+	Disable dash array since it is a work in progress right now
+
+
+2009-09-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [d1d16e8040dff4073931370f4bdff0190db32cbb]
+
+	don't consider the dash-array before it is correctly reimplemented
+
+
+2009-09-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [1d99c5718454ef142cab88c881f31e3ea08783ef]
+
+	adapting to the head of libwpg
+
+
+2008-12-10  Fridrich Strba  <fridrich.strba@bluewin.ch>  [7a5af780c55652018e7dc51b77e99d2a286b77bd]
+
+	move gradient angle from WPGGradient class to the general style (we will get rid of WPGGradient soon)
+
+
+2008-12-05  Fridrich Strba  <fridrich.strba@bluewin.ch>  [13000a8c9fa6f9b4f9c9c2c3c4be4d1fa37f7633]
+
+	committing work done in the train while having wireless access
+
+
+2008-12-05  Fridrich Strba  <fridrich.strba@bluewin.ch>  [10a4defd44ee2e761c4ae6bd65e687cfa19fa02a]
+
+	WPGBrush::style went, so learn to live without it
+
+
+2008-12-04  Fridrich Strba  <fridrich.strba@bluewin.ch>  [a4bc9d4f16c6ff9bf1b504986c425bdda1af8b51]
+
+	adapting to the removal of WPGColor.h from libwpg's API
+
+
+2008-12-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [76edf9764b2a983a9764113df8da3a635f98a95f]
+
+	don't use the WPGColor data members directly (the corresponding header will soon be removed from the public api)
+
+
+2008-12-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [f636c8fd08569fc2eb1b15da86f43780ee946207]
+
+	some more float -> double changes
+
+
+2008-12-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [70695520f55b89f5896bb4cfc6f4d8bbd4ac0f73]
+
+	adapting to the fact that getFloat -> getDouble in WPXProperty class
+
+
+2008-11-28  Fridrich Strba  <fridrich.strba@bluewin.ch>  [5ef7f05d777e3c0ae628e06ef675877f155211ee]
+
+	adapting to the new setStyle callback
+
+
+2008-11-28  Fridrich Strba  <fridrich.strba@bluewin.ch>  [539ff0dcc3e0ee8dd4316c966e5dbc322e093fa5]
+
+	adapting to the fact that WPGBitmap is not in public api anymore
+
+
+2008-11-27  Fridrich Strba  <fridrich.strba@bluewin.ch>  [ef89c38d8565c0ef7f98f4e22a1f733d977bb0f5]
+
+	adapt to the setFillRule api change
+
+
+2008-11-27  Fridrich Strba  <fridrich.strba@bluewin.ch>  [6576b17e0ff90be11ee211df9f1492c42692025b]
+
+	adapt to the absence of WPGRect and to the WPGBitmap API changes
+
+
+2008-11-27  Fridrich Strba  <fridrich.strba@bluewin.ch>  [d7111ac54bcc0ee6b27c8b7cd5373b44c461e015]
+
+	adapt to the fact that WPGPoint went
+
+
+2008-11-25  Fridrich Strba  <fridrich.strba@bluewin.ch>  [4e526c8b230154dc27dafc8132ba01133965a243]
+
+	addapting to the new drawPolyline, drawPolygon and drawPath callbacks
+
+
+2008-11-24  Fridrich Strba  <fridrich.strba@bluewin.ch>  [14e8c03cd686f2f64f58fecdf37b86d8c6ef4834]
+
+	addaptation of writerperfect to the first step in the struggle to simplify libwpg api
+
+
+2008-11-11  Fridrich Strba  <fridrich.strba@bluewin.ch>  [c2997ee949fe09244078145fd46ad147d63f545c]
+
+	an include to fix compilation with upcoming gcc-4.4.x
+
+
+2008-11-09  Fridrich Strba  <fridrich.strba@bluewin.ch>  [b177e1ccdac652d484c25caea927aaa3cc5d6209]
+
+	addapt to the new style:wrap property of a frame
+
+
+2008-10-29  Fridrich Strba  <fridrich.strba@bluewin.ch>  [0fbeff5f90d1336e2bffe40c14a45245491bab78]
+
+	passing WPXBinaryData as const ref instead of const pointer
+
+
+2008-10-13  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3f42da710deb4bd4c4090ce9d2a044aa722d0f63]
+
+	handle correctly even embedded headerless WPG1 images
+
+
+2008-08-15  Fridrich Strba  <fridrich.strba@bluewin.ch>  [9c0f6c4f7d80c360603c874fd62c84078c83a142]
+
+	remove a comment that need not be there
+
+
+2008-08-15  Fridrich Strba  <fridrich.strba@bluewin.ch>  [859829435f3f9dd7f53a5aae069508ed24989e70]
+
+	remove an unused method + set framework for importing images in other formats then WPG embedded in WordPerfect documents
+
+
+2008-07-17  Fridrich Strba  <fridrich.strba@bluewin.ch>  [606e615aebd23be1cd0064afbcb3413c5e5d899f]
+
+	get the rotated ellipses right in OpenOffice.org
+
+
+2008-07-16  Fridrich Strba  <fridrich.strba@bluewin.ch>  [0d9b3bd9296b66aeeb10c3b9203c4dfb89683807]
+
+	try to handle the rotation of ellipses in odg too
+
+
+2008-07-11  Fridrich Strba  <fridrich.strba@bluewin.ch>  [ed2e0ce8b152c22578e9679f2ca1156fa1632d5c]
+
+	implement the polyline and polygon so that the former is not closed and the later is
+
+
+2008-07-10  Fridrich Strba  <fridrich.strba@bluewin.ch>  [8ddebd60a86bfb1180babe222a469678b8997b3a]
+
+	dummy implementation of new callbacks
+
+
+2008-04-24  Fridrich Strba  <fridrich.strba@bluewin.ch>  [e18ec64671dedc9f15ded386dfcd692239f64133]
+
+	get the right define + write out the styles.xml too as it seems that OOo does need it to operate correctly
+
+
+2008-04-22  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3d29b8a4c12f2a4932e9e104f1611f7b11e8ad0b]
+
+	some insignificant formating changes
+
+
+2007-12-06  Fridrich Strba  <fridrich.strba@bluewin.ch>  [0ea137e815fc918aa8407f911f6941c6a1501383]
+
+	some little modifications of the frame properties
+
+
+2007-12-06  Fridrich Strba  <fridrich.strba@bluewin.ch>  [770717347b5defdcc260c9c56eccde8b64490a80]
+
+	removing a memory leak
+
+
+2007-12-06  Fridrich Strba  <fridrich.strba@bluewin.ch>  [e3cbfa9c830a9ef539418e519e5840832677a089]
+
+	get a separate WriterDocumentState for text boxes
+
+
+2007-11-28  Fridrich Strba  <fridrich.strba@bluewin.ch>  [8a24951fdb50e97ca6167a3e96a4dcbeb4663291]
+
+	some little simplifications + use the libwpd's password verification API
+
+
+2007-11-27  Fridrich Strba  <fridrich.strba@bluewin.ch>  [13028064df4642f68e7b537642a09171f0363d4d]
+
+	small modification: the typedetection should be independent of an existence or not of a password
+
+
+2007-11-23  Fridrich Strba  <fridrich.strba@bluewin.ch>  [64463be2ae64d7e1f302094fdb5b16373937cda0]
+
+	allow passing of password using --password=something
+
+
+2007-11-22  Fridrich Strba  <fridrich.strba@bluewin.ch>  [e4a969e9036afe287b100efe9e3e5a219bd78cfc]
+
+	rewrite the option parsing + allow converting of password protected wpd documents
+
+
+2007-11-22  Fridrich Strba  <fridrich.strba@bluewin.ch>  [335aee8d2a040b0dba4298123b851a5e47b4924d]
+
+	enable conversion of password protected documents that we know how to decrypt (WP1, WP3, WP42 and WP5)
+
+
+2007-11-16  Fridrich Strba  <fridrich.strba@bluewin.ch>  [5571c197e6a42d9584776dbf995e7201df08ece8]
+
+	FemtoZip does not manage deflate, so use only storing
+
+
+2007-11-15  Fridrich Strba  <fridrich.strba@bluewin.ch>  [5701e62dca30c5736c6232ef6534047908b6fb8d]
+
+	try to get the return values correctly
+
+
+2007-11-15  Fridrich Strba  <fridrich.strba@bluewin.ch>  [5fe446bf45e4fdb35f7c2692262edc4e3f6da2b8]
+
+	make use of libgsf optional and defeault to not to use it
+
+
+2007-10-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [a0586aa62f8e4aade90f1749fcd771a13807961c]
+
+	remove build and packaging system for OOo plugin + abstract zip-file creation, so that one can change backend without too much pain
+
+
+2007-10-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [7eef5c65503b01029d5ab5b19fd185fdf2e62e84]
+
+	removing packaging directory
+
+
+2007-10-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [4184f526d0a240b70c6e5abe40f92c875794420f]
+
+	removing NSIS installer directory
+
+
+2007-10-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [5315b170a62742081fb5d311f2b231d976c07a52]
+
+	removing even this one
+
+
+2007-10-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [ebc6b5286289e5c547c4382278ad7a66f1021bfc]
+
+	removing the ooo plugin from sources (unmaintained and obsolete)
+
+
+2007-10-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [adba87a6707fc03d1a52f11f27caf5130029eaeb]
+
+	try to unify as much functions as possible to extract them into a helper class later
+
+
+2007-10-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [63b1b468de09c681b690c87f119f25fecb51d0c6]
+
+	no need anymore of a patch for OOo 1.1 SDK
+
+
+2007-10-24  Fridrich Strba  <fridrich.strba@bluewin.ch>  [6df0342a534909ea1bd2ea8de7559f8502cbffb4]
+
+	superfluos static_casting from derived class pointer to a base class pointer
+
+
+2007-10-19  Fridrich Strba  <fridrich.strba@bluewin.ch>  [99327f33fab43d793a497e3e3c24904c035f2ae9]
+
+	adapt to the new location of libwpd-stream headers
+
+
+2007-10-19  Fridrich Strba  <fridrich.strba@bluewin.ch>  [e22d7e74b0f894216811becdb196396098e7e838]
+
+	update the spec file
+
+
+2007-10-19  Fridrich Strba  <fridrich.strba@bluewin.ch>  [9b3430a97cd5dba791ac828ff9ffebaf2cd8dafa]
+
+	since our C++ streams perform reasonably well, we don't need gsf for input anymore
+
+
+2007-10-19  Fridrich Strba  <fridrich.strba@bluewin.ch>  [8ba74524c349fdc16c0bbea5c23053145ccde8ee]
+
+	removing some unnecessary use of uint8_t in favour of unsigned char
+
+
+2007-10-17  Fridrich Strba  <fridrich.strba@bluewin.ch>  [0fcc02028ab54f0390e7542c52b1e775d9ff5795]
+
+	some reformating + adding some more properties to handle
+
+
+2007-10-15  Fridrich Strba  <fridrich.strba@bluewin.ch>  [d1a051ffffe29fdef08af2d802fad04f71467708]
+
+	without this cast, the angle is a bogus number
+
+
+2007-10-12  Fridrich Strba  <fridrich.strba@bluewin.ch>  [c50ffcaeddeda1f5feb01cf38fb84c417a4751e8]
+
+	initial and thus lame support of text boxes in writerperfect
+
+
+2007-10-11  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3ac9b1720e2773d709a7d1c634de7f16b369041c]
+
+	adapting to the new libwpd api
+
+
+2007-10-02  Fridrich Strba  <fridrich.strba@bluewin.ch>  [0750ea3caf3edb35341e6bb1b8225578227b8767]
+
+	sometimes, libtoolize is called glibtoolize
+
+
+2007-09-10  Fridrich Strba  <fridrich.strba@bluewin.ch>  [450ba9196da08652ff8d8706aa3acae0c4966ac8]
+
+	fix some includes to build with gcc 4.3 + some copyright files
+
+
+2007-09-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [1c8cad3a0ba4100666213ab0d0dda7d10e2173aa]
+
+	make distcheck pass well
+
+
+2007-09-02  Fridrich Strba  <fridrich.strba@bluewin.ch>  [07d71d85ab90bf2daa06c24deb2bf57b962e22aa]
+
+	add zip target for easy release binaries packaging
+
+
+2007-09-02  Fridrich Strba  <fridrich.strba@bluewin.ch>  [6b7b8a3b67b1230b51993913981d1bdb567c35fb]
+
+	--enable-static-tools for building as static as possible wp?2od? binaries
+
+
+2007-08-25  Fridrich Strba  <fridrich.strba@bluewin.ch>  [37bd9bab0c388465d64c0b4d1339ca1e0c7a98a8]
+
+	make cross-compiling smooth
+
+
+2007-07-23  Fridrich Strba  <fridrich.strba@bluewin.ch>  [ff3b5446f15831b883124dd9f8891ca589397102]
+
+	handling comments/annotations
+
+
+2007-07-18  Fridrich Strba  <fridrich.strba@bluewin.ch>  [1f06de1c2048292ba88f7a5dad6147ecd69b0487]
+
+	don't need the compatibility stuff
+
+
+2007-07-17  Fridrich Strba  <fridrich.strba@bluewin.ch>  [90ea5291241d778b54f76cef01551b8aa29b7ef7]
+
+	pushing sound defaults to workaround some sillies and mimic a bit better WP behaviour
+
+
+2007-07-17  Fridrich Strba  <fridrich.strba@bluewin.ch>  [30de95e21a3a92fbe9a2911de660f90d7cedc6e8]
+
+	oops
+
+
+2007-07-17  Fridrich Strba  <fridrich.strba@bluewin.ch>  [09d3026bf02c7d444b9206013704a758830eef24]
+
+	some belts and braces around negative values
+
+
+2007-07-17  Fridrich Strba  <fridrich.strba@bluewin.ch>  [2d5c7cbf292003ebd4e4b2935954902ccb9a3214]
+
+	do not create draw:object tag if there is no object to insert
+
+
+2007-07-16  Fridrich Strba  <fridrich.strba@bluewin.ch>  [1645da097302b7cce96616eb0376081fbfe6d229]
+
+	getting rid of g_return_val_if_fail
+
+
+2007-07-14  Fridrich Strba  <fridrich.strba@bluewin.ch>  [a2a6c4cf7fcf822328a200ed01b175b9a997f727]
+
+	filter attributes from dcterms namespace also when writing out the metadata. ODF specs do not speak about this namespace, so let's be here strict schema compliant
+
+
+2007-07-14  Fridrich Strba  <fridrich.strba@bluewin.ch>  [ad14f2825e3a615ffd3df315828501a87d421b09]
+
+	fix a bug where a list was interrupted by a footnote that also contained a list
+
+
+2007-07-13  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3d7efaa2ef3b6e6c1af75d92fea1673798119f8c]
+
+	small insignificant change in some private functions
+
+
+2007-07-12  Fridrich Strba  <fridrich.strba@bluewin.ch>  [f33f64f8d9ac8f65765e0e6bb3002220cf4e0a11]
+
+	metadata cannot have tag elements inside the string + escape the font name in case it is something that might confuse xml parser
+
+
+2007-07-12  Fridrich Strba  <fridrich.strba@bluewin.ch>  [579969fdff1a335206bbc86b029dba95fb7818fb]
+
+	working around the fact that only two pairs of draw:dotX are allowed
+
+
+2007-07-12  Fridrich Strba  <fridrich.strba@bluewin.ch>  [95eb797f954de6476266204c1c3d90a459e89383]
+
+	some regressions with bullet-char and some real bug discovered in the unordered list styles
+
+
+2007-07-11  Fridrich Strba  <fridrich.strba@bluewin.ch>  [06b37adfc00eadba3acf5c6af5331d7f87a2468f]
+
+	avoid an invalid text:start-value value (kind of hack)
+
+
+2007-07-11  Fridrich Strba  <fridrich.strba@bluewin.ch>  [81993741a1eda791cc724b91d159d68b64163ec3]
+
+	for bullet char, take only the first one if they are more then one
+
+
+2007-07-11  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3b57c3d3708c05e6c9462088892c285c7d52dc38]
+
+	internalize the GSFStream class, because it will be removed in some seconds from libwpd
+
+
+2007-07-11  Fridrich Strba  <fridrich.strba@bluewin.ch>  [eb07b0a71ab9475b27d5366efda81c26323a99c3]
+
+	escape strings where it is necessary
+
+
+2007-07-09  Fridrich Strba  <fridrich.strba@bluewin.ch>  [0b1e1943aa12697b9e77a9f37da2fc6f8329c1fa]
+
+	distance shouldn't be in percentage (investigate more when not tired)
+
+
+2007-07-09  Fridrich Strba  <fridrich.strba@bluewin.ch>  [b605b47642eaa9ad1fb4b42ce6cac36ef565cfa4]
+
+	oops
+
+
+2007-07-09  Fridrich Strba  <fridrich.strba@bluewin.ch>  [d0d6dc71c56684add253612ab4c416bc25b48251]
+
+	fix sillies that make WPXString::sprintf hang
+
+
+2007-07-09  Fridrich Strba  <fridrich.strba@bluewin.ch>  [6e1de12fa37f4d347af1532172b86138acd5e780]
+
+	working around some oddities with empty bullet strings
+
+
+2007-07-08  Fridrich Strba  <fridrich.strba@bluewin.ch>  [6c4cccf129222a9c68a3797308665d40b12c8c12]
+
+	correct a typo + fiddle with mimetypes :-( and OOo bug + work around a gsf bug on x86_64
+
+
+2007-07-08  Fridrich Strba  <fridrich.strba@bluewin.ch>  [bfe81d5f60ae2b97d83a1321e607e69174d132c7]
+
+	adding namespace declaration for dublin core
+
+
+2007-07-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [57e94e1fa43174345108adbe4549733a299bc13b]
+
+	necessary with certain stl implemetations like stlport 5.1
+
+
+2007-07-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3f9a80de25d65b74b8c7edc13df90f6a7d54631d]
+
+	finally, the validity might be solved
+
+
+2007-07-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [c4861b5e1a198a8c9240e570c6b4fc8f65fe7599]
+
+	trying to fix some header validation issue
+
+
+2007-07-06  Fridrich Strba  <fridrich.strba@bluewin.ch>  [dc6d9913d7d05bae29146cb58e21b8654373548a]
+
+	enabling David Hislop's work on metadata conversion in libwpd + hopefully the final fix of gsf goodness
+
+
+2007-07-06  Fridrich Strba  <fridrich.strba@bluewin.ch>  [59442e6de98d95d1a23ec83733e1d3994bd2a925]
+
+	sum1's mouth reopened and closed again
+
+
+2007-07-06  Fridrich Strba  <fridrich.strba@bluewin.ch>  [8ac4f021324391327a51001f652946d3234d71d9]
+
+	since it does not crash or leak memory and it can help to shut sum1's mouth, so committing
+
+
+2007-07-05  Fridrich Strba  <fridrich.strba@bluewin.ch>  [690be08f0af06c62bc7546087bb48b6b00b45c9c]
+
+	in odf, style:{header,footer}-left is inside style:{header:footer}
+
+
+2007-07-05  Fridrich Strba  <fridrich.strba@bluewin.ch>  [e9a3d38a29f988bc33bb7303c4f5ab09179c7e49]
+
+	make the usage message conform to the reality
+
+
+2007-07-05  Fridrich Strba  <fridrich.strba@bluewin.ch>  [c4c3026df6eb98ce96c30dd0f5fac147d85636d9]
+
+	a little Change
+
+
+2007-07-05  Fridrich Strba  <fridrich.strba@bluewin.ch>  [87b592b88666812ba792e243a3367f76c098ade9]
+
+	make the uncompressed mimetype stream optional only if the GSF functionality exists (don't bother users on old systems with this)
+
+
+2007-07-05  Fridrich Strba  <fridrich.strba@bluewin.ch>  [7b09dfc75defad277f91ca44c755f6a4d045da29]
+
+	don't compress mimetype stream
+
+
+2007-07-04  Fridrich Strba  <fridrich.strba@bluewin.ch>  [40b8d83d03ca6c8af1f8964ef5de82e5bea35ba0]
+
+	prepare writerperfect for receiving information about the positioned box from libwpd
+
+
+2007-07-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [fcca55d24a0444f8a21ca365cd0f32d048fd96be]
+
+	adapt to the new libwp.fs_experimental api
+
+
+2007-07-02  Fridrich Strba  <fridrich.strba@bluewin.ch>  [b85b042ae0f87142e2656c5dd1abf5cf193f9d57]
+
+	adapting to recent libwpd changes
+
+
+2007-07-01  Fridrich Strba  <fridrich.strba@bluewin.ch>  [25cadcad8f44aa443b7386b78a61e7966718039f]
+
+	adapting to the new libwpd interface (again)
+
+
+2007-06-30  Fridrich Strba  <fridrich.strba@bluewin.ch>  [7a9a2bf73dff0c386770b1a6cb5a110549a03bb6]
+
+	adapting to the new libwpd interface
+
+
+2007-06-29  Fridrich Strba  <fridrich.strba@bluewin.ch>  [bbf96fa96c146c3e44e01c4594fecd35c4e91169]
+
+	and forgot to modify this one
+
+
+2007-06-29  Fridrich Strba  <fridrich.strba@bluewin.ch>  [4e95250e113ebd01fd6fcf0fdbed842dec486355]
+
+	reorganizing the ooo directory, it is probably very broken now
+
+
+2007-06-29  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3816bee9d88ffc2c2376464a95065b3bc97bf788]
+
+	some little fixes to make the images scale well in side the box + incorporate wpg2odg into writerperfect (hope, ariya will not scream a lot)
+
+
+2007-06-28  Fridrich Strba  <fridrich.strba@bluewin.ch>  [350439f5b97fa5dbb790f6a8efae45440439132e]
+
+	some more commits to improve my statistics
+
+
+2007-06-28  Fridrich Strba  <fridrich.strba@bluewin.ch>  [29d85ca5128aa68adf234792570e6cb93387965f]
+
+	a small commit just to increase my number of commits in the statistics
+
+
+2007-06-28  Fridrich Strba  <fridrich.strba@bluewin.ch>  [ec6185595bae98b43227d5dbda8253dbb4d72104]
+
+	all is in the right mimetype specification
+
+
+2007-06-28  Fridrich Strba  <fridrich.strba@bluewin.ch>  [fd87da64d8d0de4472062b7da937a0ddc24df1af]
+
+	some more changes, maybe it will make sense to join wpg2odg and wpd2odt since the sources are used among them
+
+
+2007-06-27  Fridrich Strba  <fridrich.strba@bluewin.ch>  [a806b8cc12c09820e6c991bb1a176bc621012af6]
+
+	so, now we get some images displayed in the odt (a lot of work remaining though)
+
+
+2007-06-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3ebe1f9c831809de92fdbeb995d668d588525b56]
+
+	trying to add some graphics handling to wpd2odt
+
+
+2007-06-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [f3709b7a4ca0b1b02e4275df7e867e6400b95e42]
+
+	stub for graphics styles
+
+
+2007-06-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [ca8f5112397dfb22272f38597a2689f8b94c4db6]
+
+	depend on libwpg for the images
+
+
+2007-06-25  Fridrich Strba  <fridrich.strba@bluewin.ch>  [dc7b009e56311aeea950ced98b0e54265b8606e7]
+
+	adapt to the new libwpd abi
+
+
+2007-06-25  Fridrich Strba  <fridrich.strba@bluewin.ch>  [f21b6da1565ec532fa7d0b195ebbaac298282d33]
+
+	porting fs_odf_porting to head, since we branched STABLE-0-7-0
+
+
+2007-05-08  Fridrich Strba  <fridrich.strba@bluewin.ch>  [ebd93233d5b8929a0c615cd9c1c35194ffe2e14d]
+
+	and what if they are shorter then 6 chars??? Do not optimize before profiling :-)
+
+
+2007-03-08  Fridrich Strba  <fridrich.strba@bluewin.ch>  [8e5eec8f076ee31a8e7d640759eeef4d0a3f9962]
+
+	OOo does not accept negative space between paragraph and so, ignore condensed paragraphs when creating and SXW file
+
+
+2006-12-20  Fridrich Strba  <fridrich.strba@bluewin.ch>  [54f829af7742998ea8b70e0bc34405c69026c76a]
+
+	small change :-)
+
+
+2006-12-11  Fridrich Strba  <fridrich.strba@bluewin.ch>  [08d4d1e8175c78b749a3d9764d9ce2f364801299]
+
+	trying to save one strlen call per string
+
+
+2006-12-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [b9b671c153ad4165315b07776fc375deff4edcd5]
+
+	s/gsf_output_printf/gsf_output_puts/
+
+
+2006-12-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [9acec107a260441153f9ab237fc21465d010b6cd]
+
+	oops
+
+
+2006-12-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [d2b0ca36e6c674e308b91810ef0dd6ef2da8a711]
+
+	small cleanup
+
+
+2006-12-06  Fridrich Strba  <fridrich.strba@bluewin.ch>  [5516f16fda0cec75e2f047490e117fa7b947707f]
+
+	workaround for problem with gsf_output_printf on x86_64
+
+
+2006-12-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [15c48948df35ea4ec258a28c5b884625840ca689]
+
+	some more warnings gone
+
+
+2006-12-02  Fridrich Strba  <fridrich.strba@bluewin.ch>  [cc74da21df2a4275ad0765e67d331f13d4d86d06]
+
+	with this one, nothing is leaking, at least using --stdout option
+
+
+2006-12-01  Fridrich Strba  <fridrich.strba@bluewin.ch>  [ea1323c6e480160c6d326ebd160ae17446528ae7]
+
+	more leaks out and some more code optimization
+
+
+2006-12-01  Fridrich Strba  <fridrich.strba@bluewin.ch>  [0136e4ac76a6aede72765b4d24b50a32ce859458]
+
+	some more leaks removed
+
+
+2006-11-30  Fridrich Strba  <fridrich.strba@bluewin.ch>  [659393c931e91ee9fcdf2a24684ab8447b35c8ea]
+
+	trying to remove some of the numerous memory leaks in writerperfect :-(
+
+
+2006-11-30  Fridrich Strba  <fridrich.strba@bluewin.ch>  [c2467f7331d7e7448e4239ed605d49422bab3994]
+
+	small fix and version change
+
+
+2006-11-28  Fridrich Strba  <fridrich.strba@bluewin.ch>  [76a104fb9ae57f272fc2784bf84c9af245a132af]
+
+	small fixes
+
+
+2006-10-09  William Lachance  <wrlach@gmail.com>  [066a10bd4958e47e05ca079c300706deca3a2aec]
+
+	My old sympatico address is no longer valid. Mass update to my new gmail one.
+
+
+2006-05-23  Fridrich Strba  <fridrich.strba@bluewin.ch>  [ce80bca236376110f8a2b8ff3d8df4e0d59501bf]
+
+	Small cleanup
+
+
+2006-05-12  Fridrich Strba  <fridrich.strba@bluewin.ch>  [9ed8082bf8779db1b79a48e474a5a54caeb01f55]
+
+	Avoid duplicate static constants that give error in KOffice built with --enable-final option
+
+
+2006-05-05  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3cc51e5860a5d2fca3d97dd842d0dc232bd97281]
+
+	Do not lay-out a section when it is really not necessary
+
+
+2006-05-02  Fridrich Strba  <fridrich.strba@bluewin.ch>  [f407dbb1171c5d51f198b46f6161f35298b7f5fb]
+
+	Lay-out even the single column sections as sections. Preparing for possible changes in libwpd 0.8.6
+
+
+2006-05-01  Fridrich Strba  <fridrich.strba@bluewin.ch>  [5cb56a80a82223465ccdafaa377dfb96996e2161]
+
+	Produce an XML that looks more like the OOo one. Useful for diffs between the results of our conversion and the same files after loaded and saved by OOo
+
+
+2006-04-25  Fridrich Strba  <fridrich.strba@bluewin.ch>  [d8221aefdd900a5e6d704ef36638b40934de2a20]
+
+	More work on rendering wpd2sxw more robust
+
+
+2006-04-25  Fridrich Strba  <fridrich.strba@bluewin.ch>  [7176c5f8639ac2219cd8935a2ae99f2717bacdd7]
+
+	Trying to make wpd2sxw more compatible with third party sxw importers :-)
+
+
+2005-10-24  Fridrich Strba  <fridrich.strba@bluewin.ch>  [754f9f0cd5a876ee85ced3ed0ab34b6c8f1a41bb]
+
+	Update the changelog
+
+
+2005-10-24  Fridrich Strba  <fridrich.strba@bluewin.ch>  [31979c2afe1e474757e13e80fc09a4b99020c596]
+
+	Pre-release cleaning
+
+
+2005-10-03  Fridrich Strba  <fridrich.strba@bluewin.ch>  [c443252d4e66ada9989673594be69a79e2d3aafe]
+
+	Unreference what needs to be unreferenced (patch Jody Goldberg) Hopefully, this solves the "locking" on windows.
+
+
+2005-08-25  Fridrich Strba  <fridrich.strba@bluewin.ch>  [bc7b001b676f5f71cd15fcaf8d02c17f74a16835]
+
+	Merging the fs_refactoring1 branch into HEAD
+
+
+2005-07-30  Fridrich Strba  <fridrich.strba@bluewin.ch>  [820ec42a865be852a88438e782b315072bf6cdea]
+
+	Reverting the fribidi stuff since it is sooner than in writerperfect that the reordering has to be done in order to be useful
+
+
+2005-07-05  Fridrich Strba  <fridrich.strba@bluewin.ch>  [c0a668ccd8d2c42b0f0e5ed7c2b8c4c3309d0873]
+
+	Add style:font-style into the attributes that have to be expanded to asian and complex
+
+
+2005-07-04  Fridrich Strba  <fridrich.strba@bluewin.ch>  [cc99ff53fd5a82e943375e21c73a7c42bd18f01b]
+
+	It seems that fribidi 0.10.5 does not define FRIBIDI_CHARSET_UTF8, so we cater for this option too
+
+
+2005-07-04  Fridrich Strba  <fridrich.strba@bluewin.ch>  [9e9fcafad0a56cf10a6441775b1e71e50eb047ba]
+
+	Add dependency on fribidi >= 0.10.4 (The earlies I tested) Reorder strings in order to render the RTL runs correctly.
+
+
+2005-06-27  Fridrich Strba  <fridrich.strba@bluewin.ch>  [51780e578b598538a490fddb4627e4b58661ad33]
+
+	Use the same font for Western, Asian and Complex characters/unicode ranges
+
+
+2005-06-10  Fridrich Strba  <fridrich.strba@bluewin.ch>  [f46e5f918709135b5a374de99078c36244a35356]
+
+	Catch one exception + remove mention of "WriterFilter"
+
+
+2005-02-10  Fridrich Strba  <fridrich.strba@bluewin.ch>  [78403f6f097227bf503fae23a8e54005c41be3a7]
+
+	Add one include for strlen being available
+
+
+2005-02-09  William Lachance  <wrlach@gmail.com>  [4df98d9f1e67f82fee356ff4b992e178d8f8139e]
+
+	Don't do boneheaded things with strings. Update "is-header-row" to new convention of "libwpd:is-header-row".
+
+
+2005-02-09  Fridrich Strba  <fridrich.strba@bluewin.ch>  [6eff79b98b88b44e6320eb5f830c227f4ded45d6]
+
+	Remove "using namespace std;" from writerperfect; Fix a crash with certain documents
+
+
+2005-02-08  Fridrich Strba  <fridrich.strba@bluewin.ch>  [c32442ffb89df8d489a77bd76ecdb57eb9d8115a]
+
+	Removing Win32 stuff from Makefile.ooo-external; Adapting Makefile.ooo-external.msvc.in to the new reality of libwpd
+
+
+2005-02-07  William Lachance  <wrlach@gmail.com>  [09a0aec429859e9d91542a87c63ec56f9a03ed21]
+
+	Use WPXPropertyListVector class..
+
+
+2005-02-02  Fridrich Strba  <fridrich.strba@bluewin.ch>  [d996c2528cfad74506f25dc5bb8de5ad5afebe9b]
+
+	Make wpd2sxw generated file be recognized by OOo 1.9.74
+
+
+2005-01-31  William Lachance  <wrlach@gmail.com>  [da699a329aff370d5da5bbdb88edd450f0804036]
+
+	Use libwpd's new WPXVector class.
+
+
+2005-01-28  Fridrich Strba  <fridrich.strba@bluewin.ch>  [884f1678f8e8711cefd4952758648342c386d44a]
+
+	Adapting the writerperfect build to the recent changes in libwpd
+
+
+2005-01-28  William Lachance  <wrlach@gmail.com>  [3939251114e4277d89b2163b29bb66b58c33cf52]
+
+	Adapt to libwpd API changes..
+
+
+2005-01-23  Fridrich Strba  <fridrich.strba@bluewin.ch>  [8bc89a2b21405b04c0d637a8fdf43b3f8f066dd9]
+
+	I forgot these two files
+
+
+2005-01-23  Fridrich Strba  <fridrich.strba@bluewin.ch>  [e2f645360caa47d94b702660d330084526427d94]
+
+	Remove one "?"
+
+
+2005-01-23  Fridrich Strba  <fridrich.strba@bluewin.ch>  [24ab5973126cb6bfb3f75258b7b5830b114c894b]
+
+	Adding NSIS installer for WriterPerfect and ChangeLog from deprecated wpd2sxw module
+
+
+2005-01-17  William Lachance  <wrlach@gmail.com>  [b9a38f3634d0b308ee6c63de17eef0c94fe1c20a]
+
+	Occurrences are now passed a string..
+
+
+2005-01-16  Fridrich Strba  <fridrich.strba@bluewin.ch>  [801c24e36dc4ad21b0abdd1ea093400b3e6504d5]
+
+	Remove any reference to libwpd_support.h and to its content
+
+
+2005-01-16  William Lachance  <wrlach@gmail.com>  [f7a0e412fcb4cca9a72a70c338de263023d2add1]
+
+	Account for recent changes in libwpd. Ignore more generated files.
+
+
+2005-01-08  Fridrich Strba  <fridrich.strba@bluewin.ch>  [8c086076387e5d88fc452900c60c3742c973ea61]
+
+	Changing the version to 0.7.0
+
+
+2004-12-31  William Lachance  <wrlach@gmail.com>  [36502e3d1c42445ee6ef08364f8b4b4f16d6d47c]
+
+	Make sure we iterate over all the properties in a paragraph list. Always regenerate wpd2sxw with libwriterperfect by making the dependancy explicit.
+
+
+2004-12-30  William Lachance  <wrlach@gmail.com>  [2d7936c0d030d90ba20de77be9f3c521e66a63a0]
+
+	Remove ambiguity in creation of an integer property..
+
+
+2004-12-29  William Lachance  <wrlach@gmail.com>  [e040466fa0becbb6d2d7f177e0bec918476e4e35]
+
+	Update section and table styles to use new libwpd API for column properties. Remove some useless debugging information. Simplify some code.
+
+
+2004-12-29  Fridrich Strba  <fridrich.strba@bluewin.ch>  [4832b134ca381659abaa11ba74277bffd251795d]
+
+	OODocumentHandler fix + win32 build (TypeDetection stuff)
+
+
+2004-12-28  William Lachance  <wrlach@gmail.com>  [e549c7e8b1691e6fc1d1d0a788798d0c7f7fd251]
+
+	Adapt to recent changes in libwpd's tab and string apis.
+
+
+2004-12-08  Fridrich Strba  <fridrich.strba@bluewin.ch>  [8ae81f0f37e8308afe455c9e88a2d74c36cca689]
+
+	Small fix that does not change anything :-)
+
+
+2004-12-08  William Lachance  <wrlach@gmail.com>  [f6c041e8686b12343e01a0604ca0452945d33e95]
+
+	Fix bug where quotes and other entities would be double escaped. Table, list, footnote and endnote refactoring..
+
+
+2004-12-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [3394b43fba5e6c34280c91fb2db12fd7b8fbea5e]
+
+	Just a little .cvsignore modification
+
+
+2004-12-07  Fridrich Strba  <fridrich.strba@bluewin.ch>  [c1040558925ce6e0ccec84776dc2a43bc5763257]
+
+	File that I forgot to commit
+
+
+2004-12-06  Fridrich Strba  <fridrich.strba@bluewin.ch>  [105ee38405f1c7b52cd70afb017b93b98169f0c3]
+
+	Automatic filetype detection for standalone writerperfect; Unbreak debug build; Fix some file "left behind" after recent changes.
+
+
+2004-11-28  William Lachance  <wrlach@gmail.com>  [1ba0b5347cbbf7b6b9834d47857d132c4799e8c8]
+
+	Refactoring still in progress: simplify styles handling code quite a bit.
+
+
+2004-11-27  William Lachance  <wrlach@gmail.com>  [1db723b6013a5592c8ad253b76ba812b85ba902f]
+
+	Fix stupid crash with lists.
+
+
+2004-11-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [319e5cbe3a2ab6018fe6003ca5ee37d2d715dd21]
+
+	Small change
+
+
+2004-11-26  Fridrich Strba  <fridrich.strba@bluewin.ch>  [aef6411f50ce05dc4f99d65f2cbc4b03c27e29e7]
+
+	Make WriterPerfect UNO component build on Win32, Build libwriterperfect as a private library of wpd2sxw, Add spec file and "make rpm" command for producing rpms of wpd2sxw; Commit William's fix for OODocumentHandler.cxx
+
+
+2004-11-25  William Lachance  <wrlach@gmail.com>  [195146e7555acf002d61c2786b9298c234cfc0c4]
+
+	Forgot to change the integrated ooo document handler while I was refactoring..
+
+
+2004-11-25  William Lachance  <wrlach@gmail.com>  [fd5d6b68fbf0db845a5befc5807713eaeba3b722]
+
+	Enable build of WriterPerfect as an external OpenOffice.org component, more WriterPerfect refactoring
+
+
+2004-11-15  Fridrich Strba  <fridrich.strba@bluewin.ch>  [760b8f77260571bdfafb28547fcfd1a5211c1ff0]
+
+	Second part of Win32 (mingw and msvc) work
+
+
+2004-11-15  Fridrich Strba  <fridrich.strba@bluewin.ch>  [39cde5cc7343dd1c9d9c8926f20327bce7784199]
+
+	Win32 (mingw) work
+
+
+2004-11-15  William Lachance  <wrlach@gmail.com>  [20d642cc7ae849934ff43fdc4f9c3e627bd034d2]
+
+	Clean up makefiles a bit..
+
+
+2004-10-28  William Lachance  <wrlach@gmail.com>  [85102e733a45c5b13504d32a8830ca7217e42f65]
+
+	Remove a few accidentally added files..
+
+
+2004-10-28  William Lachance  <wrlach@gmail.com>  [0a3f6dec89e1d1f8d385852883a1717983247239]
+
+	Initial revision
+
