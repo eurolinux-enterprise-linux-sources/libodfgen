@@ -25,78 +25,132 @@
 #ifndef LIBODFGEN_ODPGENERATOR_HXX_INCLUDED
 #define LIBODFGEN_ODPGENERATOR_HXX_INCLUDED
 
-#include <libetonyek/libetonyek.h>
+#include <librevenge/librevenge.h>
 
+#include "libodfgen-api.hxx"
 #include "OdfDocumentHandler.hxx"
 
+class OdfGenerator;
 class OdpGeneratorPrivate;
 
 /** A generator for presentations.
   *
-  * See @c libetonyek library for documentation of the
-  * libetonyek::KEYPresentationInterface interface.
+  * See @c librevenge library for documentation of the
+  * librevenge::KEYPresentationInterface interface.
   */
-class OdpGenerator : public libetonyek::KEYPresentationInterface
+class ODFGENAPI OdpGenerator : public librevenge::RVNGPresentationInterface
 {
 public:
-	OdpGenerator(OdfDocumentHandler *pHandler, const OdfStreamType streamType);
+	OdpGenerator();
 	~OdpGenerator();
+	void addDocumentHandler(OdfDocumentHandler *pHandler, const OdfStreamType streamType);
+	librevenge::RVNGStringVector getObjectNames() const;
+	bool getObjectContent(librevenge::RVNGString const &objectName, OdfDocumentHandler *pHandler);
 
-	void startDocument(const ::WPXPropertyList &propList);
+	void startDocument(const ::librevenge::RVNGPropertyList &propList);
 	void endDocument();
-	void setDocumentMetaData(const ::WPXPropertyList &propList);
-	void startSlide(const ::WPXPropertyList &propList);
+	void setDocumentMetaData(const ::librevenge::RVNGPropertyList &propList);
+	void defineEmbeddedFont(const librevenge::RVNGPropertyList &propList);
+	void startSlide(const ::librevenge::RVNGPropertyList &propList);
 	void endSlide();
-	void startLayer(const ::WPXPropertyList &propList);
+	void startMasterSlide(const ::librevenge::RVNGPropertyList &propList);
+	void endMasterSlide();
+	void setSlideTransition(const ::librevenge::RVNGPropertyList &propList);
+	void startLayer(const ::librevenge::RVNGPropertyList &propList);
 	void endLayer();
-	void startEmbeddedGraphics(const ::WPXPropertyList &propList);
+	void startEmbeddedGraphics(const ::librevenge::RVNGPropertyList &propList);
 	void endEmbeddedGraphics();
-	void startGroup(const ::WPXPropertyList &propList);
-	void endGroup();
+	void openGroup(const ::librevenge::RVNGPropertyList &propList);
+	void closeGroup();
 
-	void setStyle(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &gradient);
+	void setStyle(const ::librevenge::RVNGPropertyList &propList);
 
-	void drawRectangle(const ::WPXPropertyList &propList);
-	void drawEllipse(const ::WPXPropertyList &propList);
-	void drawPolyline(const ::WPXPropertyListVector &vertices);
-	void drawPolygon(const ::WPXPropertyListVector &vertices);
-	void drawPath(const ::WPXPropertyListVector &path);
-	void drawGraphicObject(const ::WPXPropertyList &propList, const ::WPXBinaryData &binaryData);
-	void drawConnector(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &path);
+	void drawRectangle(const ::librevenge::RVNGPropertyList &propList);
+	void drawEllipse(const ::librevenge::RVNGPropertyList &propList);
+	void drawPolyline(const ::librevenge::RVNGPropertyList &propList);
+	void drawPolygon(const ::librevenge::RVNGPropertyList &propList);
+	void drawPath(const ::librevenge::RVNGPropertyList &propList);
+	void drawGraphicObject(const ::librevenge::RVNGPropertyList &propList);
+	void drawConnector(const ::librevenge::RVNGPropertyList &propList);
 
-	void startTextObject(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &path);
+	void startTextObject(const ::librevenge::RVNGPropertyList &propList);
 	void endTextObject();
-	void openParagraph(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &tabStops);
+	void defineParagraphStyle(const librevenge::RVNGPropertyList &propList);
+	void openParagraph(const ::librevenge::RVNGPropertyList &propList);
 	void closeParagraph();
-	void openSpan(const ::WPXPropertyList &propList);
+	void defineCharacterStyle(const librevenge::RVNGPropertyList &propList);
+	void openSpan(const ::librevenge::RVNGPropertyList &propList);
 	void closeSpan();
-	void insertText(const ::WPXString &str);
+
+	void openLink(const librevenge::RVNGPropertyList &propList);
+	void closeLink();
+
+	void insertText(const ::librevenge::RVNGString &str);
 	void insertTab();
 	void insertSpace();
 	void insertLineBreak();
-	void insertField(const WPXString &type, const ::WPXPropertyList &propList);
+	void insertField(const ::librevenge::RVNGPropertyList &propList);
 
-	void openOrderedListLevel(const ::WPXPropertyList &propList);
-	void openUnorderedListLevel(const ::WPXPropertyList &propList);
+	void openOrderedListLevel(const ::librevenge::RVNGPropertyList &propList);
+	void openUnorderedListLevel(const ::librevenge::RVNGPropertyList &propList);
 	void closeOrderedListLevel();
 	void closeUnorderedListLevel();
-	void openListElement(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &tabStops);
+	void openListElement(const ::librevenge::RVNGPropertyList &propList);
 	void closeListElement();
 
-	void openTable(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &columns);
-	void openTableRow(const ::WPXPropertyList &propList);
+	void startTableObject(const ::librevenge::RVNGPropertyList &propList);
+	void openTableRow(const ::librevenge::RVNGPropertyList &propList);
 	void closeTableRow();
-	void openTableCell(const ::WPXPropertyList &propList);
+	void openTableCell(const ::librevenge::RVNGPropertyList &propList);
 	void closeTableCell();
-	void insertCoveredTableCell(const ::WPXPropertyList &propList);
-	void closeTable();
+	void insertCoveredTableCell(const ::librevenge::RVNGPropertyList &propList);
+	void endTableObject();
 
-	void startComment(const ::WPXPropertyList &propList);
+	void startComment(const ::librevenge::RVNGPropertyList &propList);
 	void endComment();
 
-	void startNotes(const ::WPXPropertyList &propList);
+	void startNotes(const ::librevenge::RVNGPropertyList &propList);
 	void endNotes();
 
+	void defineChartStyle(const ::librevenge::RVNGPropertyList &propList);
+	void openChart(const ::librevenge::RVNGPropertyList &propList);
+	void closeChart();
+	void openChartTextObject(const ::librevenge::RVNGPropertyList &propList);
+	void closeChartTextObject();
+	void openChartPlotArea(const ::librevenge::RVNGPropertyList &propList);
+	void closeChartPlotArea();
+	void insertChartAxis(const ::librevenge::RVNGPropertyList &propList);
+	void openChartSeries(const ::librevenge::RVNGPropertyList &propList);
+	void closeChartSeries();
+
+	void openAnimationSequence(const ::librevenge::RVNGPropertyList &propList);
+	void closeAnimationSequence();
+	void openAnimationGroup(const ::librevenge::RVNGPropertyList &propList);
+	void closeAnimationGroup();
+	void openAnimationIteration(const ::librevenge::RVNGPropertyList &propList);
+	void closeAnimationIteration();
+	void insertMotionAnimation(const ::librevenge::RVNGPropertyList &propList);
+	void insertColorAnimation(const ::librevenge::RVNGPropertyList &propList);
+	void insertAnimation(const ::librevenge::RVNGPropertyList &propList);
+	void insertEffect(const ::librevenge::RVNGPropertyList &propList);
+
+	/** Registers a handler for embedded images.
+	  *
+	  * @param[in] mimeType MIME type of the image
+	  * @param[in] imageHandler a function that handles processing of
+	  *		the image's data and generating output
+	  */
+	void registerEmbeddedImageHandler(const librevenge::RVNGString &mimeType, OdfEmbeddedImage imageHandler);
+	/** Registers a handler for embedded objects.
+	  *
+	  * @param[in] mimeType MIME type of the object
+	  * @param[in] objectHandler a function that handles processing of
+	  *		the object's data and generating output
+	  */
+	void registerEmbeddedObjectHandler(const librevenge::RVNGString &mimeType, OdfEmbeddedObject objectHandler);
+
+	//! retrieve data from another odfgenerator ( the list and the embedded handler)
+	void initStateWith(OdfGenerator const &orig);
 private:
 	// disable copying
 	OdpGenerator(OdpGenerator const &);

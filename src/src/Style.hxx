@@ -25,48 +25,36 @@
 
 #ifndef _STYLE_HXX_
 #define _STYLE_HXX_
-#include <libwpd/libwpd.h>
+#include <librevenge/librevenge.h>
 
 #include "DocumentElement.hxx"
-
-class TopLevelElementStyle
-{
-public:
-	TopLevelElementStyle() : mpsMasterPageName(0) {}
-	virtual ~TopLevelElementStyle()
-	{
-		if (mpsMasterPageName) delete mpsMasterPageName;
-	}
-	void setMasterPageName(WPXString &sMasterPageName)
-	{
-		if (mpsMasterPageName) delete mpsMasterPageName;
-		mpsMasterPageName = new WPXString(sMasterPageName);
-	}
-	const WPXString *getMasterPageName() const
-	{
-		return mpsMasterPageName;
-	}
-
-private:
-	TopLevelElementStyle(const TopLevelElementStyle &);
-	TopLevelElementStyle &operator=(const TopLevelElementStyle &);
-	WPXString *mpsMasterPageName;
-};
 
 class Style
 {
 public:
-	Style(const WPXString &psName) : msName(psName) {}
+	/** the different zone ( Z_ContentAutomatic: automatic zone, Z_Style:
+		must be stored in the styles, Z_StyleAutomatic: must be
+		stored in the content automatic zone, Z_Font: must be store in
+		the font declaration part) */
+	enum Zone { Z_ContentAutomatic, Z_Style, Z_StyleAutomatic, Z_Font, Z_Unknown };
+	Style(const librevenge::RVNGString &psName, Zone type=Z_ContentAutomatic) : msName(psName), mZone(type) {}
 	virtual ~Style() {}
-
+	//! return the zone
+	Zone getZone() const
+	{
+		return mZone;
+	}
 	virtual void write(OdfDocumentHandler *) const {};
-	const WPXString &getName() const
+	const librevenge::RVNGString &getName() const
 	{
 		return msName;
 	}
 
 private:
-	WPXString msName;
+	//! the style name
+	librevenge::RVNGString msName;
+	//! the style zone
+	Zone mZone;
 };
 
 class StyleManager

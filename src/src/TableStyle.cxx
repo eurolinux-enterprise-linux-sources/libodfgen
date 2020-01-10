@@ -35,13 +35,13 @@
 
 #include <string.h>
 
-TableCellStyle::TableCellStyle(const WPXPropertyList &xPropList, const char *psName) :
+TableCellStyle::TableCellStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName) :
 	Style(psName),
 	mPropList(xPropList)
 {
 }
 
-void TableCellStyle::write(OdfDocumentHandler *pHandler) const
+void TableCellStyle::writeStyles(OdfDocumentHandler *pHandler, bool compatibleOdp) const
 {
 	TagOpenElement styleOpen("style:style");
 	styleOpen.addAttribute("style:name", getName());
@@ -50,40 +50,58 @@ void TableCellStyle::write(OdfDocumentHandler *pHandler) const
 
 	// WLACH_REFACTORING: Only temporary.. a much better solution is to
 	// generalize this sort of thing into the "Style" superclass
-	WPXPropertyList stylePropList;
-	WPXPropertyList::Iter i(mPropList);
+	librevenge::RVNGPropertyList stylePropList;
+	librevenge::RVNGPropertyList::Iter i(mPropList);
 	/* first set padding, so that mPropList can redefine, if
 	   mPropList["fo:padding"] is defined */
-	stylePropList.insert("fo:padding", "0.0382in");
+	stylePropList.insert("fo:padding", 0.0382);
 	for (i.rewind(); i.next();)
 	{
-		if (strlen(i.key()) > 2 && strncmp(i.key(), "fo", 2) == 0)
+		if (!strncmp(i.key(), "fo", 2))
 			stylePropList.insert(i.key(), i()->clone());
-		else if (strlen(i.key()) > 22  && strncmp(i.key(), "style:border-line-width", 23) == 0)
+		else if (!strncmp(i.key(), "style:border-line-width", 23))
 		{
-			if (strcmp(i.key(), "style:border-line-width") == 0 ||
-			        strcmp(i.key(), "style:border-line-width-left") == 0 ||
-			        strcmp(i.key(), "style:border-line-width-right") == 0 ||
-			        strcmp(i.key(), "style:border-line-width-top") == 0 ||
-			        strcmp(i.key(), "style:border-line-width-bottom") == 0)
+			if (!strcmp(i.key(), "style:border-line-width") ||
+			        !strcmp(i.key(), "style:border-line-width-left") ||
+			        !strcmp(i.key(), "style:border-line-width-right") ||
+			        !strcmp(i.key(), "style:border-line-width-top") ||
+			        !strcmp(i.key(), "style:border-line-width-bottom"))
 				stylePropList.insert(i.key(), i()->clone());
 		}
-		else if (strcmp(i.key(), "style:vertical-align")==0)
+		else if (!strcmp(i.key(), "style:vertical-align"))
 			stylePropList.insert(i.key(), i()->clone());
 	}
 	pHandler->startElement("style:table-cell-properties", stylePropList);
 	pHandler->endElement("style:table-cell-properties");
 
-	writeCompat(pHandler, mPropList);
+	if (compatibleOdp)
+	{
+		librevenge::RVNGPropertyList pList;
+		pList.insert("fo:padding", "0.0382in");
+		if (mPropList["draw:fill"])
+			pList.insert("draw:fill", mPropList["draw:fill"]->getStr());
+		if (mPropList["draw:fill-color"])
+			pList.insert("draw:fill-color", mPropList["draw:fill-color"]->getStr());
+		if (mPropList["fo:padding"])
+			pList.insert("fo:padding", mPropList["fo:padding"]->getStr());
+		if (mPropList["draw:textarea-horizontal-align"])
+			pList.insert("draw:textarea-horizontal-align", mPropList["draw:textarea-horizontal-align"]->getStr());
+		pHandler->startElement("style:graphic-properties", pList);
+		pHandler->endElement("style:graphic-properties");
 
+		// HACK to get visible borders
+		if (mPropList["fo:border"])
+		{
+			pList.clear();
+			pList.insert("fo:border", mPropList["fo:border"]->getStr());
+			pHandler->startElement("style:paragraph-properties", pList);
+			pHandler->endElement("style:paragraph-properties");
+		}
+	}
 	pHandler->endElement("style:style");
 }
 
-void TableCellStyle::writeCompat(OdfDocumentHandler *, const WPXPropertyList &) const
-{
-}
-
-TableRowStyle::TableRowStyle(const WPXPropertyList &propList, const char *psName) :
+TableRowStyle::TableRowStyle(const librevenge::RVNGPropertyList &propList, const char *psName) :
 	Style(psName),
 	mPropList(propList)
 {
@@ -109,32 +127,135 @@ void TableRowStyle::write(OdfDocumentHandler *pHandler) const
 }
 
 
-TableStyle::TableStyle(const WPXPropertyList &xPropList, const WPXPropertyListVector &columns, const char *psName) :
-	Style(psName),
-	mPropList(xPropList),
-	mColumns(columns),
-	mTableCellStyles(),
-	mTableRowStyles()
+Table::Table(const librevenge::RVNGPropertyList &xPropList, const char *psName, Style::Zone zone) :
+	Style(psName, zone), mPropList(xPropList),
+	mbRowOpened(false), mbRowHeaderOpened(false), mbCellOpened(false),
+	mRowNameHash(), mRowStyleHash(), mCellNameHash(), mCellStyleHash()
 {
 }
 
-TableStyle::~TableStyle()
+Table::~Table()
 {
-	typedef std::vector<TableCellStyle *>::iterator TCSVIter;
-	typedef std::vector<TableRowStyle *>::iterator TRSVIter;
-	for (TCSVIter iterTableCellStyles = mTableCellStyles.begin() ; iterTableCellStyles != mTableCellStyles.end(); ++iterTableCellStyles)
-		delete(*iterTableCellStyles);
-	for (TRSVIter iterTableRowStyles = mTableRowStyles.begin() ; iterTableRowStyles != mTableRowStyles.end(); ++iterTableRowStyles)
-		delete(*iterTableRowStyles);
 }
 
-void TableStyle::write(OdfDocumentHandler *pHandler) const
+int Table::getNumColumns() const
+{
+	const librevenge::RVNGPropertyListVector *columns = mPropList.child("librevenge:table-columns");
+	if (columns)
+		return (int)(columns->count());
+	return 0;
+}
+
+librevenge::RVNGString Table::openRow(const librevenge::RVNGPropertyList &propList)
+{
+	if (mbRowOpened)
+	{
+		ODFGEN_DEBUG_MSG(("Table::openRow: a row is already open\n"));
+		return "";
+	}
+	mbRowOpened=true;
+	mbRowHeaderOpened=propList["librevenge:is-header-row"] &&
+	                  propList["librevenge:is-header-row"]->getInt();
+	// first remove unused data
+	librevenge::RVNGPropertyList pList;
+	librevenge::RVNGPropertyList::Iter i(propList);
+	for (i.rewind(); i.next();)
+	{
+		if (strncmp(i.key(), "librevenge:", 11)==0)
+			continue;
+		if (i.child())
+			continue;
+		pList.insert(i.key(),i()->clone());
+	}
+	librevenge::RVNGString hashKey = pList.getPropString();
+	std::map<librevenge::RVNGString, librevenge::RVNGString>::const_iterator iter =
+	    mRowNameHash.find(hashKey);
+	if (iter!=mRowNameHash.end()) return iter->second;
+
+	librevenge::RVNGString name;
+	name.sprintf("%s_row%i", getName().cstr(), (int) mRowStyleHash.size());
+	mRowNameHash[hashKey]=name;
+	mRowStyleHash[name]=shared_ptr<TableRowStyle>(new TableRowStyle(propList, name.cstr()));
+	return name;
+}
+
+bool Table::closeRow()
+{
+	if (!mbRowOpened)
+	{
+		ODFGEN_DEBUG_MSG(("Table::closeRow: no row is open\n"));
+		return false;
+	}
+	mbRowOpened=mbRowHeaderOpened=false;
+	return true;
+}
+
+librevenge::RVNGString Table::openCell(const librevenge::RVNGPropertyList &propList)
+{
+	if (!mbRowOpened || mbCellOpened)
+	{
+		ODFGEN_DEBUG_MSG(("Table::openCell: can not open a cell\n"));
+		return "";
+	}
+	mbCellOpened=true;
+	// first remove unused data
+	librevenge::RVNGPropertyList pList;
+	librevenge::RVNGPropertyList::Iter i(propList);
+	for (i.rewind(); i.next();)
+	{
+		if (!strncmp(i.key(), "librevenge:", 11) &&
+		        strncmp(i.key(), "librevenge:numbering-name", 24))
+			continue;
+		if (i.child())
+			continue;
+		pList.insert(i.key(),i()->clone());
+	}
+	librevenge::RVNGString hashKey = pList.getPropString();
+	std::map<librevenge::RVNGString, librevenge::RVNGString>::const_iterator iter =
+	    mCellNameHash.find(hashKey);
+	if (iter!=mCellNameHash.end()) return iter->second;
+
+	librevenge::RVNGString name;
+	name.sprintf("%s_cell%i", getName().cstr(), (int) mCellStyleHash.size());
+	mCellNameHash[hashKey]=name;
+	mCellStyleHash[name]=shared_ptr<TableCellStyle>(new TableCellStyle(propList, name.cstr()));
+	return name;
+}
+
+bool Table::closeCell()
+{
+	if (!mbCellOpened)
+	{
+		ODFGEN_DEBUG_MSG(("Table::closeCell: no cell are opened\n"));
+		return false;
+	}
+	mbCellOpened=false;
+	return true;
+}
+
+bool Table::insertCoveredCell(const librevenge::RVNGPropertyList &)
+{
+	if (!mbRowOpened || mbCellOpened)
+	{
+		ODFGEN_DEBUG_MSG(("Table::insertCoveredCell: can not open a cell\n"));
+		return false;
+	}
+	return true;
+}
+
+void Table::write(OdfDocumentHandler *pHandler) const
+{
+	ODFGEN_DEBUG_MSG(("Table::write: default function must not be called\n"));
+	write(pHandler, false);
+}
+
+void Table::write(OdfDocumentHandler *pHandler, bool compatibleOdp) const
 {
 	TagOpenElement styleOpen("style:style");
 	styleOpen.addAttribute("style:name", getName());
 	styleOpen.addAttribute("style:family", "table");
-	if (getMasterPageName())
-		styleOpen.addAttribute("style:master-page-name", getMasterPageName()->cstr());
+	if (mPropList["style:master-page-name"])
+		styleOpen.addAttribute("style:master-page-name", mPropList["style:master-page-name"]->getStr());
 	styleOpen.write(pHandler);
 
 	TagOpenElement stylePropertiesOpen("style:table-properties");
@@ -156,32 +277,91 @@ void TableStyle::write(OdfDocumentHandler *pHandler) const
 
 	pHandler->endElement("style:style");
 
-	int i=1;
-	WPXPropertyListVector::Iter j(mColumns);
-	for (j.rewind(); j.next();)
+	const librevenge::RVNGPropertyListVector *columns = mPropList.child("librevenge:table-columns");
+	if (columns && columns->count())
 	{
-		TagOpenElement columnStyleOpen("style:style");
-		WPXString sColumnName;
-		sColumnName.sprintf("%s.Column%i", getName().cstr(), i);
-		columnStyleOpen.addAttribute("style:name", sColumnName);
-		columnStyleOpen.addAttribute("style:family", "table-column");
-		columnStyleOpen.write(pHandler);
+		librevenge::RVNGPropertyListVector::Iter j(*columns);
 
-		pHandler->startElement("style:table-column-properties", j());
-		pHandler->endElement("style:table-column-properties");
+		int i=1;
+		for (j.rewind(); j.next(); ++i)
+		{
+			TagOpenElement columnStyleOpen("style:style");
+			librevenge::RVNGString sColumnName;
+			sColumnName.sprintf("%s.Column%i", getName().cstr(), i);
+			columnStyleOpen.addAttribute("style:name", sColumnName);
+			columnStyleOpen.addAttribute("style:family", "table-column");
+			columnStyleOpen.write(pHandler);
 
-		pHandler->endElement("style:style");
+			pHandler->startElement("style:table-column-properties", j());
+			pHandler->endElement("style:table-column-properties");
 
-		i++;
+			pHandler->endElement("style:style");
+		}
 	}
 
-	typedef std::vector<TableRowStyle *>::const_iterator TRSVIter;
-	for (TRSVIter iterTableRow = mTableRowStyles.begin() ; iterTableRow != mTableRowStyles.end(); ++iterTableRow)
-		(*iterTableRow)->write(pHandler);
+	std::map<librevenge::RVNGString, shared_ptr<TableRowStyle> >::const_iterator rIt;
+	for (rIt=mRowStyleHash.begin(); rIt!=mRowStyleHash.end(); ++rIt)
+	{
+		if (!rIt->second) continue;
+		rIt->second->write(pHandler);
+	}
 
-	typedef std::vector<TableCellStyle *>::const_iterator TCSVIter;
-	for (TCSVIter iterTableCell = mTableCellStyles.begin() ; iterTableCell != mTableCellStyles.end(); ++iterTableCell)
-		(*iterTableCell)->write(pHandler);
+	std::map<librevenge::RVNGString, shared_ptr<TableCellStyle> >::const_iterator cIt;
+	for (cIt=mCellStyleHash.begin(); cIt!=mCellStyleHash.end(); ++cIt)
+	{
+		if (!cIt->second) continue;
+		cIt->second->writeStyles(pHandler, compatibleOdp);
+	}
+}
+
+TableManager::TableManager() : mTableOpened(), mTableStyles()
+{
+}
+
+TableManager::~TableManager()
+{
+}
+
+void TableManager::clean()
+{
+	mTableOpened.clear();
+	mTableStyles.clear();
+}
+
+bool TableManager::openTable(const librevenge::RVNGPropertyList &xPropList, Style::Zone zone)
+{
+	librevenge::RVNGString sTableName;
+	if (zone==Style::Z_Unknown)
+		zone=Style::Z_ContentAutomatic;
+	if (zone==Style::Z_StyleAutomatic)
+		sTableName.sprintf("Table_M%i", (int) mTableStyles.size());
+	else
+		sTableName.sprintf("Table%i", (int) mTableStyles.size());
+
+	shared_ptr<Table> table(new Table(xPropList, sTableName.cstr(), zone));
+	mTableOpened.push_back(table);
+	mTableStyles.push_back(table);
+	return true;
+}
+
+bool TableManager::closeTable()
+{
+	if (mTableOpened.empty())
+	{
+		ODFGEN_DEBUG_MSG(("TableManager::oops: no table are opened\n"));
+		return false;
+	}
+	mTableOpened.pop_back();
+	return true;
+}
+
+void TableManager::write(OdfDocumentHandler *pHandler, Style::Zone zone, bool compatibleOdp) const
+{
+	for (size_t i=0; i < mTableStyles.size(); ++i)
+	{
+		if (mTableStyles[i] && mTableStyles[i]->getZone()==zone)
+			mTableStyles[i]->write(pHandler, compatibleOdp);
+	}
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 noexpandtab: */

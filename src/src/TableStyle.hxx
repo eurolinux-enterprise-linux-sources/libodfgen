@@ -26,8 +26,13 @@
 
 #ifndef _TABLESTYLE_HXX_
 #define _TABLESTYLE_HXX_
-#include <libwpd/libwpd.h>
+#include <librevenge/librevenge.h>
+
+#include <map>
 #include <vector>
+
+// for shared_ptr
+#include "FilterInternal.hxx"
 
 #include "Style.hxx"
 
@@ -37,56 +42,111 @@ class TableCellStyle : public Style
 {
 public:
 	virtual ~TableCellStyle() {};
-	TableCellStyle(const WPXPropertyList &xPropList, const char *psName);
-	virtual void write(OdfDocumentHandler *pHandler) const;
+	TableCellStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName);
+	virtual void writeStyles(OdfDocumentHandler *pHandler, bool odpCompat=false) const;
 private:
-	virtual void writeCompat(OdfDocumentHandler *pHandler, const WPXPropertyList &propList) const;
-private:
-	WPXPropertyList mPropList;
+	librevenge::RVNGPropertyList mPropList;
 };
 
 class TableRowStyle : public Style
 {
 public:
 	virtual ~TableRowStyle() {};
-	TableRowStyle(const WPXPropertyList &propList, const char *psName);
+	TableRowStyle(const librevenge::RVNGPropertyList &propList, const char *psName);
 	virtual void write(OdfDocumentHandler *pHandler) const;
 private:
-	WPXPropertyList mPropList;
+	librevenge::RVNGPropertyList mPropList;
 };
 
-class TableStyle : public Style, public TopLevelElementStyle
+class Table : public Style
 {
 public:
-	TableStyle(const WPXPropertyList &xPropList, const WPXPropertyListVector &columns, const char *psName);
-	virtual ~TableStyle();
-	virtual void write(OdfDocumentHandler *pHandler) const;
-	int getNumColumns() const
+	Table(const librevenge::RVNGPropertyList &xPropList, const char *psName, Style::Zone zone);
+	virtual ~Table();
+
+	// write automatic/named style
+	virtual void write(OdfDocumentHandler *, bool compatibleOdp) const;
+
+	int getNumColumns() const;
+
+	librevenge::RVNGString openRow(const librevenge::RVNGPropertyList &propList);
+	bool closeRow();
+	bool isRowOpened(bool &inHeaderRow) const
 	{
-		return (int)mColumns.count();
+		inHeaderRow=mbRowHeaderOpened;
+		return mbRowOpened;
 	}
-	void addTableCellStyle(TableCellStyle *pTableCellStyle)
+	librevenge::RVNGString openCell(const librevenge::RVNGPropertyList &propList);
+	bool closeCell();
+	bool insertCoveredCell(const librevenge::RVNGPropertyList &propList);
+	bool isCellOpened() const
 	{
-		mTableCellStyles.push_back(pTableCellStyle);
+		return mbCellOpened;
 	}
-	int getNumTableCellStyles()
-	{
-		return (int)mTableCellStyles.size();
-	}
-	void addTableRowStyle(TableRowStyle *pTableRowStyle)
-	{
-		mTableRowStyles.push_back(pTableRowStyle);
-	}
-	int getNumTableRowStyles()
-	{
-		return (int)mTableRowStyles.size();
-	}
+protected:
+	// default write function ( must not be called)
+	virtual void write(OdfDocumentHandler *) const;
 private:
-	WPXPropertyList mPropList;
-	WPXPropertyListVector mColumns;
-	std::vector<TableCellStyle *> mTableCellStyles;
-	std::vector<TableRowStyle *> mTableRowStyles;
+	librevenge::RVNGPropertyList mPropList;
+	bool mbRowOpened, mbRowHeaderOpened, mbCellOpened;
+
+	// hash key -> row style name
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mRowNameHash;
+	// style name -> TableRowStyle
+	std::map<librevenge::RVNGString, shared_ptr<TableRowStyle> > mRowStyleHash;
+	// hash key -> cell style name
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mCellNameHash;
+	// style name -> TableCellStyle
+	std::map<librevenge::RVNGString, shared_ptr<TableCellStyle> > mCellStyleHash;
+
+	// disable copying
+	Table(const Table &);
+	Table &operator=(const Table &);
 };
+
+class TableManager
+{
+public:
+	TableManager();
+	virtual ~TableManager();
+	//! clean all data
+	void clean();
+	// write all
+	virtual void write(OdfDocumentHandler *pHandler, bool compatibleOdp=false) const
+	{
+		write(pHandler, Style::Z_StyleAutomatic, compatibleOdp);
+		write(pHandler, Style::Z_ContentAutomatic, compatibleOdp);
+	}
+	// write automatic/named/... style
+	void write(OdfDocumentHandler *pHandler, Style::Zone zone, bool compatibleOdp=false) const;
+
+	bool isTableOpened() const
+	{
+		return !mTableOpened.empty();
+	}
+	Table *getActualTable()
+	{
+		if (mTableOpened.empty()) return 0;
+		return mTableOpened.back().get();
+	}
+	Table const *getActualTable() const
+	{
+		if (mTableOpened.empty()) return 0;
+		return mTableOpened.back().get();
+	}
+	//! open a table and update the list of elements
+	bool openTable(const librevenge::RVNGPropertyList &xPropList, Style::Zone zone);
+	bool closeTable();
+
+private:
+	std::vector<shared_ptr<Table> > mTableOpened;
+	std::vector<shared_ptr<Table> > mTableStyles;
+
+	// disable copying
+	TableManager(const TableManager &);
+	TableManager &operator=(const TableManager &);
+};
+
 #endif
 
 /* vim:set shiftwidth=4 softtabstop=4 noexpandtab: */

@@ -24,13 +24,36 @@
  */
 #ifndef _ODFDOCUMENTHANDLER_HXX_
 #define _ODFDOCUMENTHANDLER_HXX_
-#include <libwpd/libwpd.h>
+#include <librevenge/librevenge.h>
+
+#include "libodfgen-api.hxx"
 
 /** Type of ODF content a generator should produce.
   *
   * @sa OdgGenerator, OdpGenerator, OdtGenerator
   */
-enum OdfStreamType { ODF_FLAT_XML, ODF_CONTENT_XML, ODF_STYLES_XML, ODF_SETTINGS_XML, ODF_META_XML };
+enum ODFGENAPI OdfStreamType { ODF_FLAT_XML, ODF_CONTENT_XML, ODF_STYLES_XML, ODF_SETTINGS_XML, ODF_META_XML, ODF_MANIFEST_XML };
+
+class OdfDocumentHandler;
+
+/** Handler for embedded objects.
+  *
+  * @param[in] data the object's data
+  * @param[in] pHandler the current OdfDocumentHandler
+  * @param[in] streamType type of the object
+  */
+typedef bool (*OdfEmbeddedObject)(const librevenge::RVNGBinaryData &data, OdfDocumentHandler *pHandler, const OdfStreamType streamType);
+
+/** Handler for embedded images.
+  *
+  * This is also (mis)used for embedded fonts, to avoid API change. In
+  * this case the output format must be TTF.
+  *
+  * @param[in] input the image's data
+  * @param[in] output the same image in format suitable for the used
+  * OdfDocumentHandler.
+  */
+typedef bool (*OdfEmbeddedImage)(const librevenge::RVNGBinaryData &input, librevenge::RVNGBinaryData &output);
 
 /** XML writer.
   *
@@ -39,7 +62,7 @@ enum OdfStreamType { ODF_FLAT_XML, ODF_CONTENT_XML, ODF_STYLES_XML, ODF_SETTINGS
   * saved to a file, printed to the standard output, saved to a file
   * inside a package, or whatever else.
   */
-class OdfDocumentHandler
+class ODFGENAPI OdfDocumentHandler
 {
 public:
 	virtual ~OdfDocumentHandler() {}
@@ -57,7 +80,7 @@ public:
 	  * @param[in] psName name of the element
 	  * @param[in] xPropList list of attributes
 	  */
-	virtual void startElement(const char *psName, const WPXPropertyList &xPropList) = 0;
+	virtual void startElement(const char *psName, const librevenge::RVNGPropertyList &xPropList) = 0;
 
 	/** Add a end tag to the XML document.
 	  *
@@ -70,7 +93,7 @@ public:
 	  *
 	  * @param[in] sCharacters the content
 	  */
-	virtual void characters(const WPXString &sCharacters) = 0;
+	virtual void characters(const librevenge::RVNGString &sCharacters) = 0;
 };
 #endif
 

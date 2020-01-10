@@ -26,27 +26,29 @@
 #ifndef _INTERNALHANDLER_HXX_
 #define _INTERNALHANDLER_HXX_
 
-#include <libwpd/libwpd.h>
-#include <libwpd/WPXProperty.h>
-#include <libwpd/WPXString.h>
+#include <librevenge/librevenge.h>
 #include <libodfgen/libodfgen.hxx>
 #include "DocumentElement.hxx"
+
+#include "FilterInternal.hxx"
 
 class InternalHandler : public OdfDocumentHandler
 {
 public:
-	InternalHandler(std::vector<DocumentElement *> *elements);
+	InternalHandler(libodfgen::DocumentElementVector *elements) :mpElements(elements)
+	{
+	}
 	~InternalHandler() {};
 
 	void startDocument() {};
 	void endDocument() {};
-	void startElement(const char *psName, const WPXPropertyList &xPropList);
+	void startElement(const char *psName, const librevenge::RVNGPropertyList &xPropList);
 	void endElement(const char *psName);
-	void characters(const WPXString &sCharacters);
+	void characters(const librevenge::RVNGString &sCharacters);
 private:
 	InternalHandler(const InternalHandler &);
 	InternalHandler &operator=(const InternalHandler &);
-	std::vector<DocumentElement *> *mpElements;
+	libodfgen::DocumentElementVector *mpElements;
 };
 #endif
 

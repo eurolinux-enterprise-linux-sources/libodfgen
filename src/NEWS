@@ -1,3 +1,50 @@
+libodfgen 0.1.4
+
+- drawing interface: do no forget to call startDocument/endDocument when
+  writing in the manifest
+- metadata: added handler for 'template' metadata, unknown metadata are
+  written in a meta:user-defined elements,
+- defineSheetNumberingStyle: can now define styles for the whole document
+  (and not only for the actual sheet)
+- update doxygen configuration file + add a make astyle command
+
+libodfgen 0.1.3
+
+- Allow writing meta:creation-date metadata element for drawings and
+  presentations too.
+- Improve handling of headings. Most importantly, write valid ODF.
+- Write meta:generator metadata element.
+- Add initial support for embedded fonts. It is currently limited to Flat
+  ODF output.
+
+libodfgen 0.1.2
+
+- Use text:h element for headings. Any paragraph with text:outline-level
+  property is recognized as a heading.
+- Handle layers.
+- Improve handling of styles. Particularly, do not emit duplicate styles.
+- Slightly improve documentation.
+- Handle master pages.
+- Do not expect that integer properties are always in inches.
+- Fix misspelled style:paragraph-properties element in presentation notes.
+- Only export public symbols on Linux.
+- Fix bogus XML-escaping of metadata values.
+- And many other improvements and fixes.
+
+libodfgen 0.1.1
+
+- Export API symbols on Windows.
+- Fix few minor problems with debug mode.
+
+libodfgen 0.1.0
+
+- rebase to librevenge
+- add spreadsheet generator
+- split common parts of all generators out to a base class
+- add tests for all generators
+- add chart generator
+- and many other improvements
+
 libodfgen 0.0.4
 
 - fix handling of presentation tables

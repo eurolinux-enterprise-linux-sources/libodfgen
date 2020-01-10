@@ -29,7 +29,7 @@
 
 #include <map>
 
-#include <libwpd/libwpd.h>
+#include <librevenge/librevenge.h>
 
 #include "FilterInternal.hxx"
 
@@ -37,37 +37,31 @@
 
 class OdfDocumentHandler;
 
-class ParagraphStyle
+class ParagraphStyle : public Style
 {
 public:
-	ParagraphStyle(WPXPropertyList const &propList, const WPXPropertyListVector &tabStops, const WPXString &sName);
+	ParagraphStyle(librevenge::RVNGPropertyList const &propList, const librevenge::RVNGString &sName, Style::Zone zone);
 	virtual ~ParagraphStyle();
 	virtual void write(OdfDocumentHandler *pHandler) const;
-	WPXString getName() const
-	{
-		return msName;
-	}
+
 private:
-	WPXPropertyList mpPropList;
-	WPXPropertyListVector mxTabStops;
-	WPXString msName;
+	librevenge::RVNGPropertyList mpPropList;
 };
 
 
 class SpanStyle : public Style
 {
 public:
-	SpanStyle(const char *psName, const WPXPropertyList &xPropList);
+	SpanStyle(const char *psName, const librevenge::RVNGPropertyList &xPropList, Style::Zone zone);
 	virtual void write(OdfDocumentHandler *pHandler) const;
-
 private:
-	WPXPropertyList mPropList;
+	librevenge::RVNGPropertyList mPropList;
 };
 
 class ParagraphStyleManager : public StyleManager
 {
 public:
-	ParagraphStyleManager() : mNameHash(), mStyleHash() {}
+	ParagraphStyleManager() : mHashNameMap(), mStyleHash(), mDisplayNameMap() {}
 	virtual ~ParagraphStyleManager()
 	{
 		clean();
@@ -75,30 +69,38 @@ public:
 
 	/* create a new style if it does not exists. In all case, returns the name of the style
 
-	Note: using S%i as new name*/
-	WPXString findOrAdd(const WPXPropertyList &xPropList, const WPXPropertyListVector &tabStops);
+	Note: using S%i(or S_M%i) as new name*/
+	librevenge::RVNGString findOrAdd(const librevenge::RVNGPropertyList &xPropList, Style::Zone zone=Style::Z_Unknown);
 
 	/* returns the style corresponding to a given name ( if it exists ) */
-	shared_ptr<ParagraphStyle> const get(const WPXString &name) const;
+	shared_ptr<ParagraphStyle> const get(const librevenge::RVNGString &name) const;
+	//! return the file name corresponding to a display name
+	librevenge::RVNGString getFinalDisplayName(const librevenge::RVNGString &displayName);
 
 	virtual void clean();
-	virtual void write(OdfDocumentHandler *) const;
-
+	// write all
+	virtual void write(OdfDocumentHandler *pHandler) const
+	{
+		write(pHandler, Style::Z_Style);
+		write(pHandler, Style::Z_StyleAutomatic);
+		write(pHandler, Style::Z_ContentAutomatic);
+	}
+	// write automatic/named style
+	void write(OdfDocumentHandler *pHandler, Style::Zone zone) const;
 
 protected:
-	// return a unique key
-	WPXString getKey(const WPXPropertyList &xPropList, const WPXPropertyListVector &tabStops) const;
-
 	// hash key -> name
-	std::map<WPXString, WPXString, ltstr> mNameHash;
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mHashNameMap;
 	// style name -> paragraph style
-	std::map<WPXString, shared_ptr<ParagraphStyle>, ltstr> mStyleHash;
+	std::map<librevenge::RVNGString, shared_ptr<ParagraphStyle> > mStyleHash;
+	// display name -> style name
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mDisplayNameMap;
 };
 
 class SpanStyleManager : public StyleManager
 {
 public:
-	SpanStyleManager() : mNameHash(), mStyleHash() {}
+	SpanStyleManager() : mHashNameMap(), mStyleHash(), 	mDisplayNameMap() {}
 	virtual ~SpanStyleManager()
 	{
 		clean();
@@ -106,20 +108,33 @@ public:
 
 	/* create a new style if it does not exists. In all case, returns the name of the style
 
-	Note: using Span%i as new name*/
-	WPXString findOrAdd(const WPXPropertyList &xPropList);
-
+	Note: using Span%i (or Span_M%i) as new name*/
+	librevenge::RVNGString findOrAdd(const librevenge::RVNGPropertyList &xPropList, Style::Zone zone=Style::Z_Unknown);
 	/* returns the style corresponding to a given name ( if it exists ) */
-	shared_ptr<SpanStyle> const get(const WPXString &name) const;
+	shared_ptr<SpanStyle> const get(const librevenge::RVNGString &name) const;
+	/** append the span in the element, ie. the stroke, pattern, bitmap, marker properties */
+	static void addSpanProperties(librevenge::RVNGPropertyList const &style, librevenge::RVNGPropertyList &element);
+	//! return the file name corresponding to a display name
+	librevenge::RVNGString getFinalDisplayName(const librevenge::RVNGString &displayName);
 
 	virtual void clean();
-	virtual void write(OdfDocumentHandler *) const;
+	// write all
+	virtual void write(OdfDocumentHandler *pHandler) const
+	{
+		write(pHandler, Style::Z_Style);
+		write(pHandler, Style::Z_StyleAutomatic);
+		write(pHandler, Style::Z_ContentAutomatic);
+	}
+	// write automatic/named style
+	void write(OdfDocumentHandler *pHandler, Style::Zone zone) const;
 
 protected:
 	// hash key -> style name
-	std::map<WPXString, WPXString, ltstr> mNameHash;
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mHashNameMap;
 	// style name -> SpanStyle
-	std::map<WPXString, shared_ptr<SpanStyle>, ltstr> mStyleHash;
+	std::map<librevenge::RVNGString, shared_ptr<SpanStyle> > mStyleHash;
+	// display name -> style name
+	std::map<librevenge::RVNGString, librevenge::RVNGString> mDisplayNameMap;
 };
 #endif
 

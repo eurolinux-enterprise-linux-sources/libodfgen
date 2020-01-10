@@ -32,12 +32,10 @@
 double rint(double x);
 #endif /* _WIN32 */
 
-SectionStyle::SectionStyle(const WPXPropertyList &xPropList,
-                           const WPXPropertyListVector &xColumns,
-                           const char *psName) :
-	Style(psName),
-	mPropList(xPropList),
-	mColumns(xColumns)
+SectionStyle::SectionStyle(const librevenge::RVNGPropertyList &xPropList,
+                           const char *psName, Style::Zone zone) :
+	Style(psName, zone),
+	mPropList(xPropList)
 {
 }
 
@@ -48,42 +46,43 @@ void SectionStyle::write(OdfDocumentHandler *pHandler) const
 	styleOpen.addAttribute("style:family", "section");
 	styleOpen.write(pHandler);
 
-	WPXPropertyList propList;
-	WPXPropertyList::Iter p(mPropList);
-	for (p.rewind(); p.next(); )
+	librevenge::RVNGPropertyList propList;
+	librevenge::RVNGPropertyList::Iter p(mPropList);
+	for (p.rewind(); p.next();)
 	{
-		if (strncmp(p.key(), "libwpd:", 7) != 0)
+		if (strncmp(p.key(), "librevenge:", 11) && !p.child())
 			propList.insert(p.key(), p()->getStr());
 	}
 	pHandler->startElement("style:section-properties", propList);
 
 	// column properties
-	WPXPropertyList columnProps;
+	librevenge::RVNGPropertyList columnProps;
 
 	// if the number of columns is <= 1, we will never come here. This is only an additional check
 	// style properties
-	if (mColumns.count() > 1)
+	const librevenge::RVNGPropertyListVector *columns = mPropList.child("style:columns");
+	if (columns && columns->count() > 1)
 	{
-		columnProps.insert("fo:column-count", (int)mColumns.count());
+		columnProps.insert("fo:column-count", (int)columns->count());
 		pHandler->startElement("style:columns", columnProps);
 
-		if (mPropList["libwpd:colsep-width"] && mPropList["libwpd:colsep-color"])
+		if (mPropList["librevenge:colsep-width"] && mPropList["librevenge:colsep-color"])
 		{
-			WPXPropertyList columnSeparator;
-			columnSeparator.insert("style:width", mPropList["libwpd:colsep-width"]->getStr());
-			columnSeparator.insert("style:color", mPropList["libwpd:colsep-color"]->getStr());
-			if (mPropList["libwpd:colsep-height"])
-				columnSeparator.insert("style:height", mPropList["libwpd:colsep-height"]->getStr());
+			librevenge::RVNGPropertyList columnSeparator;
+			columnSeparator.insert("style:width", mPropList["librevenge:colsep-width"]->getStr());
+			columnSeparator.insert("style:color", mPropList["librevenge:colsep-color"]->getStr());
+			if (mPropList["librevenge:colsep-height"])
+				columnSeparator.insert("style:height", mPropList["librevenge:colsep-height"]->getStr());
 			else
 				columnSeparator.insert("style:height", "100%");
-			if (mPropList["libwpd:colsep-vertical-align"])
-				columnSeparator.insert("style:vertical-align", mPropList["libwpd:colsep-vertical-align"]->getStr());
+			if (mPropList["librevenge:colsep-vertical-align"])
+				columnSeparator.insert("style:vertical-align", mPropList["librevenge:colsep-vertical-align"]->getStr());
 			else
 				columnSeparator.insert("style:vertical-align", "middle");
 			pHandler->startElement("style:column-sep", columnSeparator);
 			pHandler->endElement("style:column-sep");
 		}
-		WPXPropertyListVector::Iter i(mColumns);
+		librevenge::RVNGPropertyListVector::Iter i(*columns);
 		for (i.rewind(); i.next();)
 		{
 			pHandler->startElement("style:column", i());
@@ -103,6 +102,38 @@ void SectionStyle::write(OdfDocumentHandler *pHandler) const
 	pHandler->endElement("style:section-properties");
 
 	pHandler->endElement("style:style");
+}
+
+//
+// the manager
+//
+
+void SectionStyleManager::clean()
+{
+	mStyleList.resize(0);
+}
+
+librevenge::RVNGString SectionStyleManager::add(const librevenge::RVNGPropertyList &propList, Style::Zone zone)
+{
+	if (zone==Style::Z_Unknown)
+		zone=Style::Z_ContentAutomatic;
+	librevenge::RVNGString name;
+	if (zone==Style::Z_StyleAutomatic)
+		name.sprintf("Section_M%i", mStyleList.size());
+	else
+		name.sprintf("Section%i", mStyleList.size());
+	shared_ptr<SectionStyle> style(new SectionStyle(propList, name.cstr(), zone));
+	mStyleList.push_back(style);
+	return name;
+}
+
+void SectionStyleManager::write(OdfDocumentHandler *pHandler, Style::Zone zone) const
+{
+	for (size_t i=0; i<mStyleList.size(); ++i)
+	{
+		if (mStyleList[i] && mStyleList[i]->getZone()==zone)
+			mStyleList[i]->write(pHandler);
+	}
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 noexpandtab: */

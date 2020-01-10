@@ -27,101 +27,108 @@
 #ifndef _ODTGENERATOR_HXX_
 #define _ODTGENERATOR_HXX_
 
-#include <libwpd/libwpd.h>
+#include <librevenge/librevenge.h>
 
+#include "libodfgen-api.hxx"
 #include "OdfDocumentHandler.hxx"
 
-/** Handler for embedded objects.
-  *
-  * @param[in] data the object's data
-  * @param[in] pHandler the current OdfDocumentHandler
-  * @param[in] streamType type of the object
-  */
-typedef bool (*OdfEmbeddedObject)(const WPXBinaryData &data, OdfDocumentHandler *pHandler, const OdfStreamType streamType);
-
-/** Handler for embedded images.
-  *
-  * @param[in] input the image's data
-  * @param[in] output the same image in format suitable for the used
-  * OdfDocumentHandler.
-  */
-typedef bool (*OdfEmbeddedImage)(const WPXBinaryData &input, WPXBinaryData &output);
-
 class OdtGeneratorPrivate;
+class OdfGenerator;
 
 /** A generator for text documents.
   *
-  * See @c libwpd library for documentation of the ::WPXDocumentInterface
+  * See @c librevenge library for documentation of the ::librevenge::RVNGTextInterface
   * interface.
   */
-class OdtGenerator : public WPXDocumentInterface
+class ODFGENAPI OdtGenerator : public librevenge::RVNGTextInterface
 {
 public:
-	OdtGenerator(OdfDocumentHandler *pHandler, const OdfStreamType streamType);
+	OdtGenerator();
 	~OdtGenerator();
+	void addDocumentHandler(OdfDocumentHandler *pHandler, const OdfStreamType streamType);
+	librevenge::RVNGStringVector getObjectNames() const;
+	bool getObjectContent(librevenge::RVNGString const &objectName, OdfDocumentHandler *pHandler);
 
-	void setDocumentMetaData(const WPXPropertyList &propList);
-	void startDocument();
+	void setDocumentMetaData(const librevenge::RVNGPropertyList &propList);
+	void startDocument(const librevenge::RVNGPropertyList &);
 	void endDocument();
 
-	void definePageStyle(const WPXPropertyList &);
-	void openPageSpan(const WPXPropertyList &propList);
+	void defineEmbeddedFont(const librevenge::RVNGPropertyList &propList);
+
+	void definePageStyle(const librevenge::RVNGPropertyList &);
+	void openPageSpan(const librevenge::RVNGPropertyList &propList);
 	void closePageSpan();
 
-	void defineSectionStyle(const WPXPropertyList &, const WPXPropertyListVector &);
-	void openSection(const WPXPropertyList &propList, const WPXPropertyListVector &columns);
+	void defineSectionStyle(const librevenge::RVNGPropertyList &);
+	void openSection(const librevenge::RVNGPropertyList &propList);
 	void closeSection();
 
-	void openHeader(const WPXPropertyList &propList);
+	void openHeader(const librevenge::RVNGPropertyList &propList);
 	void closeHeader();
-	void openFooter(const WPXPropertyList &propList);
+	void openFooter(const librevenge::RVNGPropertyList &propList);
 	void closeFooter();
 
-	void defineParagraphStyle(const WPXPropertyList &, const WPXPropertyListVector &);
-	void openParagraph(const WPXPropertyList &propList, const WPXPropertyListVector &tabStops);
+	void defineParagraphStyle(const librevenge::RVNGPropertyList &propList);
+	void openParagraph(const librevenge::RVNGPropertyList &propList);
 	void closeParagraph();
 
-	void defineCharacterStyle(const WPXPropertyList &);
-	void openSpan(const WPXPropertyList &propList);
+	void defineCharacterStyle(const librevenge::RVNGPropertyList &propList);
+	void openSpan(const librevenge::RVNGPropertyList &propList);
 	void closeSpan();
+
+	void openLink(const librevenge::RVNGPropertyList &propList);
+	void closeLink();
 
 	void insertTab();
 	void insertSpace();
-	void insertText(const WPXString &text);
+	void insertText(const librevenge::RVNGString &text);
 	void insertLineBreak();
-	void insertField(const WPXString &type, const WPXPropertyList &propList);
+	void insertField(const librevenge::RVNGPropertyList &propList);
 
-	void defineOrderedListLevel(const WPXPropertyList &propList);
-	void defineUnorderedListLevel(const WPXPropertyList &propList);
-	void openOrderedListLevel(const WPXPropertyList &propList);
-	void openUnorderedListLevel(const WPXPropertyList &propList);
+	void openOrderedListLevel(const librevenge::RVNGPropertyList &propList);
+	void openUnorderedListLevel(const librevenge::RVNGPropertyList &propList);
 	void closeOrderedListLevel();
 	void closeUnorderedListLevel();
-	void openListElement(const WPXPropertyList &propList, const WPXPropertyListVector &tabStops);
+	void openListElement(const librevenge::RVNGPropertyList &propList);
 	void closeListElement();
 
-	void openFootnote(const WPXPropertyList &propList);
+	void openFootnote(const librevenge::RVNGPropertyList &propList);
 	void closeFootnote();
-	void openEndnote(const WPXPropertyList &propList);
+	void openEndnote(const librevenge::RVNGPropertyList &propList);
 	void closeEndnote();
-	void openComment(const WPXPropertyList &propList);
+	void openComment(const librevenge::RVNGPropertyList &propList);
 	void closeComment();
-	void openTextBox(const WPXPropertyList &propList);
+	void openTextBox(const librevenge::RVNGPropertyList &propList);
 	void closeTextBox();
 
-	void openTable(const WPXPropertyList &propList, const WPXPropertyListVector &columns);
-	void openTableRow(const WPXPropertyList &propList);
+	void openTable(const librevenge::RVNGPropertyList &propList);
+	void openTableRow(const librevenge::RVNGPropertyList &propList);
 	void closeTableRow();
-	void openTableCell(const WPXPropertyList &propList);
+	void openTableCell(const librevenge::RVNGPropertyList &propList);
 	void closeTableCell();
-	void insertCoveredTableCell(const WPXPropertyList &propList);
+	void insertCoveredTableCell(const librevenge::RVNGPropertyList &propList);
 	void closeTable();
 
-	void openFrame(const WPXPropertyList &propList);
+	//
+	// simple Graphic
+	//
+
+	void openGroup(const librevenge::RVNGPropertyList &propList);
+	void closeGroup();
+
+	void defineGraphicStyle(const librevenge::RVNGPropertyList &propList);
+	void drawRectangle(const librevenge::RVNGPropertyList &propList);
+	void drawEllipse(const librevenge::RVNGPropertyList &propList);
+	void drawPolygon(const librevenge::RVNGPropertyList &propList);
+	void drawPolyline(const librevenge::RVNGPropertyList &propList);
+	void drawPath(const librevenge::RVNGPropertyList &propList);
+	void drawConnector(const librevenge::RVNGPropertyList &propList);
+
+	void openFrame(const librevenge::RVNGPropertyList &propList);
 	void closeFrame();
 
-	void insertBinaryObject(const WPXPropertyList &propList, const WPXBinaryData &data);
-	void insertEquation(const WPXPropertyList &propList, const WPXString &data);
+	void insertBinaryObject(const librevenge::RVNGPropertyList &propList);
+	void insertEquation(const librevenge::RVNGPropertyList &propList);
 
 	/** Registers a handler for embedded objects.
 	  *
@@ -129,7 +136,7 @@ public:
 	  * @param[in] objectHandler a function that handles processing of
 	  *		the object's data and generating output
 	  */
-	void registerEmbeddedObjectHandler(const WPXString &mimeType, OdfEmbeddedObject objectHandler);
+	void registerEmbeddedObjectHandler(const librevenge::RVNGString &mimeType, OdfEmbeddedObject objectHandler);
 
 	/** Registers a handler for embedded images.
 	  *
@@ -140,7 +147,9 @@ public:
 	  * @param[in] imageHandler a function that handles processing of
 	  *		the images's data and generating output
 	  */
-	void registerEmbeddedImageHandler(const WPXString &mimeType, OdfEmbeddedImage imageHandler);
+	void registerEmbeddedImageHandler(const librevenge::RVNGString &mimeType, OdfEmbeddedImage imageHandler);
+	//! retrieve data from another odfgenerator ( the list and the embedded handler)
+	void initStateWith(OdfGenerator const &orig);
 
 private:
 	OdtGenerator(OdtGenerator const &);

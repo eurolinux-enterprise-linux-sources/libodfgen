@@ -26,11 +26,8 @@
 #ifndef _DOCUMENTELEMENT_HXX_
 #define _DOCUMENTELEMENT_HXX_
 
-#include <libwpd/libwpd.h>
-#include <libwpd/WPXProperty.h>
-#include <libwpd/WPXString.h>
 #include <vector>
-
+#include <librevenge/librevenge.h>
 #include <libodfgen/libodfgen.hxx>
 
 class DocumentElement
@@ -45,32 +42,33 @@ class TagElement : public DocumentElement
 {
 public:
 	virtual ~TagElement() {}
-	TagElement(const WPXString &szTagName) : msTagName(szTagName) {}
-	const WPXString &getTagName() const
+	TagElement(const librevenge::RVNGString &szTagName) : msTagName(szTagName) {}
+	const librevenge::RVNGString &getTagName() const
 	{
 		return msTagName;
 	}
 	virtual void print() const;
 private:
-	WPXString msTagName;
+	librevenge::RVNGString msTagName;
 };
 
 class TagOpenElement : public TagElement
 {
 public:
-	TagOpenElement(const WPXString &szTagName) : TagElement(szTagName), maAttrList() {}
+	TagOpenElement(const librevenge::RVNGString &szTagName) : TagElement(szTagName), maAttrList() {}
 	virtual ~TagOpenElement() {}
-	void addAttribute(const WPXString &szAttributeName, const WPXString &sAttributeValue);
+	void addAttribute(const librevenge::RVNGString &szAttributeName,
+	                  const librevenge::RVNGString &sAttributeValue, bool forceString=true);
 	virtual void write(OdfDocumentHandler *pHandler) const;
-	virtual void print () const;
+	virtual void print() const;
 private:
-	WPXPropertyList maAttrList;
+	librevenge::RVNGPropertyList maAttrList;
 };
 
 class TagCloseElement : public TagElement
 {
 public:
-	TagCloseElement(const WPXString &szTagName) : TagElement(szTagName) {}
+	TagCloseElement(const librevenge::RVNGString &szTagName) : TagElement(szTagName) {}
 	virtual ~TagCloseElement() {}
 	virtual void write(OdfDocumentHandler *pHandler) const;
 };
@@ -78,22 +76,22 @@ public:
 class CharDataElement : public DocumentElement
 {
 public:
-	CharDataElement(const WPXString &sData) : DocumentElement(), msData(sData) {}
+	CharDataElement(const librevenge::RVNGString &sData) : DocumentElement(), msData(sData) {}
 	virtual ~CharDataElement() {}
 	virtual void write(OdfDocumentHandler *pHandler) const;
 private:
-	WPXString msData;
+	librevenge::RVNGString msData;
 };
 
 class TextElement : public DocumentElement
 {
 public:
-	TextElement(const WPXString &sTextBuf) : DocumentElement(), msTextBuf(sTextBuf, false) {}
+	TextElement(const librevenge::RVNGString &sTextBuf) : DocumentElement(), msTextBuf(sTextBuf) {}
 	virtual ~TextElement() {}
 	virtual void write(OdfDocumentHandler *pHandler) const;
 
 private:
-	WPXString msTextBuf;
+	librevenge::RVNGString msTextBuf;
 };
 
 #endif

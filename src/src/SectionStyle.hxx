@@ -25,8 +25,9 @@
 #ifndef _SECTIONSTYLE_HXX_
 #define _SECTIONSTYLE_HXX_
 
-#include <libwpd/libwpd.h>
-#include <libwpd/WPXPropertyListVector.h>
+#include <vector>
+
+#include <librevenge/librevenge.h>
 
 #include "Style.hxx"
 
@@ -34,13 +35,44 @@
 class SectionStyle : public Style
 {
 public:
-	SectionStyle(const WPXPropertyList &xPropList, const WPXPropertyListVector &xColumns, const char *psName);
+	SectionStyle(const librevenge::RVNGPropertyList &xPropList, const char *psName, Style::Zone zone);
 	virtual void write(OdfDocumentHandler *pHandler) const;
 
 private:
-	WPXPropertyList mPropList;
-	WPXPropertyListVector mColumns;
+	librevenge::RVNGPropertyList mPropList;
 };
+
+
+class SectionStyleManager : public StyleManager
+{
+public:
+	SectionStyleManager() : mStyleList() {}
+	virtual ~SectionStyleManager()
+	{
+		clean();
+	}
+
+	/* creates a new style and returns the name of the style
+
+	Note: using Section%i (or Section_M%i) as new name*/
+	librevenge::RVNGString add(const librevenge::RVNGPropertyList &xPropList, Style::Zone zone=Style::Z_Unknown);
+
+	virtual void clean();
+	// write all
+	virtual void write(OdfDocumentHandler *pHandler) const
+	{
+		write(pHandler, Style::Z_Style);
+		write(pHandler, Style::Z_StyleAutomatic);
+		write(pHandler, Style::Z_ContentAutomatic);
+	}
+	// write automatic/named style
+	void write(OdfDocumentHandler *pHandler, Style::Zone zone) const;
+
+protected:
+	// the list of section
+	std::vector<shared_ptr<SectionStyle> > mStyleList;
+};
+
 #endif
 
 /* vim:set shiftwidth=4 softtabstop=4 noexpandtab: */

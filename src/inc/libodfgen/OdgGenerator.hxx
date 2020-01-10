@@ -25,48 +25,107 @@
 #ifndef __ODGGENERATOR_HXX__
 #define __ODGGENERATOR_HXX__
 
-#include <libwpd/libwpd.h>
-#include <libwpg/libwpg.h>
+#include <librevenge/librevenge.h>
 
+#include "libodfgen-api.hxx"
 #include "OdfDocumentHandler.hxx"
 
+class OdfGenerator;
 class OdgGeneratorPrivate;
 
 /** A generator for vector drawings.
   *
-  * See @c libwpg library for documentation of the
-  * libwpg::WPGPaintInterface interface.
+  * See @c librevenge library for documentation of the
+  * librevenge::WPGPaintInterface interface.
   */
-class OdgGenerator : public libwpg::WPGPaintInterface
+class ODFGENAPI OdgGenerator : public librevenge::RVNGDrawingInterface
 {
 public:
-	OdgGenerator(OdfDocumentHandler *pHandler, const OdfStreamType streamType);
+	OdgGenerator();
 	~OdgGenerator();
+	void addDocumentHandler(OdfDocumentHandler *pHandler, const OdfStreamType streamType);
+	librevenge::RVNGStringVector getObjectNames() const;
+	bool getObjectContent(librevenge::RVNGString const &objectName, OdfDocumentHandler *pHandler);
+	void setDocumentMetaData(const librevenge::RVNGPropertyList &);
 
-	void startGraphics(const ::WPXPropertyList &propList);
-	void endGraphics();
-	void startLayer(const ::WPXPropertyList &propList);
+	void defineEmbeddedFont(const librevenge::RVNGPropertyList &propList);
+
+	void startPage(const librevenge::RVNGPropertyList &);
+	void endPage();
+	void startMasterPage(const librevenge::RVNGPropertyList &);
+	void endMasterPage();
+	void startLayer(const ::librevenge::RVNGPropertyList &propList);
 	void endLayer();
-	void startEmbeddedGraphics(const ::WPXPropertyList &propList);
+	void openGroup(const ::librevenge::RVNGPropertyList &propList);
+	void closeGroup();
+	void startEmbeddedGraphics(const ::librevenge::RVNGPropertyList &propList);
 	void endEmbeddedGraphics();
 
-	void setStyle(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &gradient);
+	void setStyle(const ::librevenge::RVNGPropertyList &propList);
 
-	void drawRectangle(const ::WPXPropertyList &propList);
-	void drawEllipse(const ::WPXPropertyList &propList);
-	void drawPolyline(const ::WPXPropertyListVector &vertices);
-	void drawPolygon(const ::WPXPropertyListVector &vertices);
-	void drawPath(const ::WPXPropertyListVector &path);
-	void drawGraphicObject(const ::WPXPropertyList &propList, const ::WPXBinaryData &binaryData);
+	void drawRectangle(const ::librevenge::RVNGPropertyList &propList);
+	void drawEllipse(const ::librevenge::RVNGPropertyList &propList);
+	void drawPolyline(const ::librevenge::RVNGPropertyList &propList);
+	void drawPolygon(const ::librevenge::RVNGPropertyList &propList);
+	void drawPath(const ::librevenge::RVNGPropertyList &propList);
+	void drawGraphicObject(const ::librevenge::RVNGPropertyList &propList);
+	void drawConnector(const ::librevenge::RVNGPropertyList &propList);
 
-	void startTextObject(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &path);
+	void startTableObject(const ::librevenge::RVNGPropertyList &propList);
+	void openTableRow(const ::librevenge::RVNGPropertyList &propList);
+	void closeTableRow();
+	void openTableCell(const ::librevenge::RVNGPropertyList &propList);
+	void closeTableCell();
+	void insertCoveredTableCell(const ::librevenge::RVNGPropertyList &propList);
+	void endTableObject();
+
+	void startTextObject(const ::librevenge::RVNGPropertyList &propList);
 	void endTextObject();
-	void startTextLine(const ::WPXPropertyList &propList);
-	void endTextLine();
-	void startTextSpan(const ::WPXPropertyList &propList);
-	void endTextSpan();
-	void insertText(const ::WPXString &str);
 
+	void defineParagraphStyle(const librevenge::RVNGPropertyList &propList);
+	void openParagraph(const librevenge::RVNGPropertyList &propList);
+	void closeParagraph();
+
+	void defineCharacterStyle(const librevenge::RVNGPropertyList &propList);
+	void openSpan(const librevenge::RVNGPropertyList &propList);
+	void closeSpan();
+
+	void openLink(const librevenge::RVNGPropertyList &propList);
+	void closeLink();
+
+	void insertText(const librevenge::RVNGString &text);
+	void insertTab();
+	void insertSpace();
+	void insertLineBreak();
+	void insertField(const librevenge::RVNGPropertyList &propList);
+
+	void openOrderedListLevel(const librevenge::RVNGPropertyList &propList);
+	void openUnorderedListLevel(const librevenge::RVNGPropertyList &propList);
+	void closeOrderedListLevel();
+	void closeUnorderedListLevel();
+	void openListElement(const librevenge::RVNGPropertyList &propList);
+	void closeListElement();
+
+	void startDocument(const librevenge::RVNGPropertyList &);
+	void endDocument();
+
+	/** Registers a handler for embedded images.
+	  *
+	  * @param[in] mimeType MIME type of the image
+	  * @param[in] imageHandler a function that handles processing of
+	  *		the image's data and generating output
+	  */
+	void registerEmbeddedImageHandler(const librevenge::RVNGString &mimeType, OdfEmbeddedImage imageHandler);
+	/** Registers a handler for embedded objects.
+	  *
+	  * @param[in] mimeType MIME type of the object
+	  * @param[in] objectHandler a function that handles processing of
+	  *		the object's data and generating output
+	  */
+	void registerEmbeddedObjectHandler(const librevenge::RVNGString &mimeType, OdfEmbeddedObject objectHandler);
+
+	//! retrieve data from another odfgenerator ( the list and the embedded handler)
+	void initStateWith(OdfGenerator const &orig);
 private:
 	OdgGenerator(OdgGenerator const &);
 	OdgGenerator &operator=(OdgGenerator const &);

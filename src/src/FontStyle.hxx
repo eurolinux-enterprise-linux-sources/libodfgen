@@ -25,8 +25,9 @@
 #ifndef _FONTSTYLE_HXX_
 #define _FONTSTYLE_HXX_
 #include <map>
+#include <vector>
 
-#include <libwpd/libwpd.h>
+#include <librevenge/librevenge.h>
 
 #include "FilterInternal.hxx"
 
@@ -34,21 +35,39 @@
 
 class FontStyle : public Style
 {
+	struct EmbeddedInfo
+	{
+		EmbeddedInfo(const librevenge::RVNGString &mimeType, const librevenge::RVNGBinaryData &data);
+
+		librevenge::RVNGString m_mimeType;
+		librevenge::RVNGBinaryData m_data;
+	};
+
 public:
 	FontStyle(const char *psName, const char *psFontFamily);
 	~FontStyle();
 	virtual void write(OdfDocumentHandler *pHandler) const;
-	const WPXString &getFontFamily() const
+	const librevenge::RVNGString &getFontFamily() const
 	{
 		return msFontFamily;
 	}
+	bool isEmbedded() const
+	{
+		return bool(m_embeddedInfo);
+	}
+	void setEmbedded(const librevenge::RVNGString &mimeType, const librevenge::RVNGBinaryData &data);
 
 private:
-	WPXString msFontFamily;
+	void writeEmbedded(OdfDocumentHandler *pHandler) const;
+
+private:
+	librevenge::RVNGString msFontFamily;
+	shared_ptr<EmbeddedInfo> m_embeddedInfo;
 };
 
 class FontStyleManager : public StyleManager
 {
+
 public:
 	FontStyleManager() : mStyleHash() {}
 	virtual ~FontStyleManager()
@@ -60,16 +79,19 @@ public:
 
 	Note: the returned font name is actually equalled to psFontFamily
 	*/
-	WPXString findOrAdd(const char *psFontFamily);
+	librevenge::RVNGString findOrAdd(const char *psFontFamily);
+
+	/** Set given font as embedded with given data.
+	 */
+	void setEmbedded(const librevenge::RVNGString &name, const librevenge::RVNGString &mimeType, const librevenge::RVNGBinaryData &data);
 
 	virtual void clean();
 	virtual void write(OdfDocumentHandler *) const {}
-	virtual void writeFontsDeclaration(OdfDocumentHandler *) const;
-
+	virtual void write(OdfDocumentHandler *, Style::Zone zone) const;
 
 protected:
 	// style name -> SpanStyle
-	std::map<WPXString, shared_ptr<FontStyle>, ltstr> mStyleHash;
+	std::map<librevenge::RVNGString, shared_ptr<FontStyle> > mStyleHash;
 };
 
 #endif
