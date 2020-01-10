@@ -2,7 +2,7 @@
 
 Name: libodfgen
 Version: 0.0.2
-Release: 3%{?dist}
+Release: 5%{?dist}
 Summary: An ODF generator library
 
 Group: System Environment/Libraries
@@ -64,6 +64,12 @@ rm -f %{buildroot}/%{_libdir}/*.la
 
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.0.2-5
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.0.2-4
+- Mass rebuild 2013-12-27
+
 * Mon Sep 09 2013 David Tardon <dtardon@redhat.com> - 0.0.2-3
 - do not build in C++11 mode
 
