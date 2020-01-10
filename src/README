@@ -1,3 +1,14 @@
+DESCRIPTION:
+
+libodfgen is a library for generating documents in (surprise!) Open
+Document Format (ODF). It provides generator implementation for the
+following libraries:
+* libwpd (::WPXDocumentInterface): text documents
+* libwpg (libwpg::WPGPaintInterface): vector drawings
+* libetonyek (libetonyek::KEYPresentationInterface): presentations
+As these APIs are used by multiple libraries, libodfgen can be used to
+generate ODF from many sources.
+
 INSTALLATION:
 
 Installation on Unix/Linux should be simple. Simply execute the following 
@@ -10,7 +21,8 @@ libwpg (>= 0.2.0) installed. Eventually you should have boost headers if you
 choose to compile using boost smart pointers.
 
 You will also need to have pkgconfig installed, for the build system to find
-both libwpd and libwpg.
+both libwpd and libwpg, and doxygen, unless you choose to disable building
+of API documentation.
 
 This will make + install a libodfgen library and all files needed to use the
 library from your code.

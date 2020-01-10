@@ -29,12 +29,15 @@
 #include "FilterInternal.hxx"
 #include "DocumentElement.hxx"
 #include "GraphicFunctions.hxx"
+#include "ListStyle.hxx"
+#include "TableStyle.hxx"
 #include "TextRunStyle.hxx"
 #include "FontStyle.hxx"
 #include <locale.h>
 #include <math.h>
 #include <string>
 #include <map>
+#include <stack>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -60,18 +63,142 @@ static WPXString doubleToString(const double value)
 
 } // anonymous namespace
 
-class OdgGeneratorPrivate
+namespace
+{
+
+struct GeneratorState
+{
+	bool mbIsTextBox;
+	bool mbIsTextLine;
+	bool mbIsTextOnPath;
+	bool mInComment;
+	bool mHeaderRow;
+	bool mTableCellOpened;
+	bool mInNotes;
+
+	GeneratorState();
+};
+
+GeneratorState::GeneratorState()
+	: mbIsTextBox(false)
+	, mbIsTextLine(false)
+	, mbIsTextOnPath(false)
+	, mInComment(false)
+	, mHeaderRow(false)
+	, mTableCellOpened(false)
+	, mInNotes(false)
+{
+}
+
+}
+
+namespace
+{
+
+// list state
+struct ListState
+{
+	ListState();
+	ListState(const ListState &state);
+
+	ListStyle *mpCurrentListStyle;
+	bool mbListElementParagraphOpened;
+	std::stack<bool> mbListElementOpened;
+private:
+	ListState &operator=(const ListState &state);
+};
+
+ListState::ListState() :
+	mpCurrentListStyle(0),
+	mbListElementParagraphOpened(false),
+	mbListElementOpened()
+{
+}
+
+ListState::ListState(const ListState &state) :
+	mpCurrentListStyle(state.mpCurrentListStyle),
+	mbListElementParagraphOpened(state.mbListElementParagraphOpened),
+	mbListElementOpened(state.mbListElementOpened)
+{
+}
+
+}
+
+namespace
+{
+
+class GraphicTableCellStyle : public TableCellStyle
 {
 public:
-	OdgGeneratorPrivate(OdfDocumentHandler *pHandler, const OdfStreamType streamType);
-	~OdgGeneratorPrivate();
+	GraphicTableCellStyle(const WPXPropertyList &xPropList, const char *psName);
+	virtual ~GraphicTableCellStyle();
+
+private:
+	virtual void writeCompat(OdfDocumentHandler *pHandler, const WPXPropertyList &propList) const;
+};
+
+GraphicTableCellStyle::GraphicTableCellStyle(const WPXPropertyList &xPropList, const char *const psName)
+	: TableCellStyle(xPropList, psName)
+{
+}
+
+GraphicTableCellStyle::~GraphicTableCellStyle()
+{
+}
+
+void GraphicTableCellStyle::writeCompat(OdfDocumentHandler *const pHandler, const WPXPropertyList &propList) const
+{
+	WPXPropertyList stylePropList;
+	WPXPropertyList::Iter i(propList);
+
+	/* first set padding, so that mPropList can redefine, if
+	   mPropList["fo:padding"] is defined */
+	stylePropList.insert("fo:padding", "0.0382in");
+	stylePropList.insert("draw:fill", "none");
+	stylePropList.insert("draw:textarea-horizontal-align", "center");
+
+	for (i.rewind(); i.next();)
+	{
+		if (strcmp(i.key(), "fo:background-color") == 0)
+		{
+			stylePropList.insert("draw:fill", "solid");
+			stylePropList.insert("draw:fill-color", i()->clone());
+		}
+		else if (strcmp(i.key(), "style:vertical-align")==0)
+			stylePropList.insert("draw:textarea-vertical-align", i()->clone());
+	}
+
+	pHandler->startElement("style:graphic-properties", stylePropList);
+	pHandler->endElement("style:graphic-properties");
+
+	// HACK to get visible borders
+	WPXPropertyList paraPropList;
+	paraPropList.insert("fo:border", "0.03pt solid #000000");
+
+	pHandler->startElement("style:paragraph-properties", paraPropList);
+	pHandler->endElement("style:paragraph-properties");
+}
+
+}
+
+class OdpGeneratorPrivate
+{
+public:
+	OdpGeneratorPrivate(OdfDocumentHandler *pHandler, const OdfStreamType streamType);
+	~OdpGeneratorPrivate();
 	/** update a graphic style element */
 	void _updateGraphicPropertiesElement(TagOpenElement &element, ::WPXPropertyList const &style, ::WPXPropertyListVector const &gradient);
 	void _writeGraphicsStyle();
+	void writeNotesStyles();
 	void _drawPolySomething(const ::WPXPropertyListVector &vertices, bool isClosed);
 	void _drawPath(const WPXPropertyListVector &path);
+
+	void openListLevel(TagOpenElement *pListLevelOpenElement);
+	void closeListLevel();
+
 	//! returns the document type
 	std::string getDocumentType() const;
+
 	// body elements
 	std::vector <DocumentElement *> mBodyElements;
 
@@ -95,6 +222,10 @@ public:
 	// font styles
 	FontStyleManager mFontManager;
 
+	// table styles
+	std::vector<TableStyle *> mTableStyles;
+	TableStyle *mpCurrentTableStyle;
+
 	OdfDocumentHandler *mpHandler;
 
 	::WPXPropertyList mxStyle;
@@ -111,17 +242,17 @@ public:
 
 	const OdfStreamType mxStreamType;
 
-	bool mbIsTextBox;
-	bool mbIsTextLine;
-	bool mbIsTextOnPath;
+	// generator state
+	GeneratorState mState;
+	std::stack<ListState> mListStates;
 
 private:
-	OdgGeneratorPrivate(const OdgGeneratorPrivate &);
-	OdgGeneratorPrivate &operator=(const OdgGeneratorPrivate &);
+	OdpGeneratorPrivate(const OdpGeneratorPrivate &);
+	OdpGeneratorPrivate &operator=(const OdpGeneratorPrivate &);
 
 };
 
-OdgGeneratorPrivate::OdgGeneratorPrivate(OdfDocumentHandler *pHandler, const OdfStreamType streamType):
+OdpGeneratorPrivate::OdpGeneratorPrivate(OdfDocumentHandler *pHandler, const OdfStreamType streamType):
 	mBodyElements(),
 	mGraphicsStrokeDashStyles(),
 	mGraphicsGradientStyles(),
@@ -133,6 +264,8 @@ OdgGeneratorPrivate::OdgGeneratorPrivate(OdfDocumentHandler *pHandler, const Odf
 	mParagraphManager(),
 	mSpanManager(),
 	mFontManager(),
+	mTableStyles(),
+	mpCurrentTableStyle(0),
 	mpHandler(pHandler),
 	mxStyle(), mxGradient(),
 	miGradientIndex(1),
@@ -147,13 +280,12 @@ OdgGeneratorPrivate::OdgGeneratorPrivate(OdfDocumentHandler *pHandler, const Odf
 	mfHeight(0.0),
 	mfMaxHeight(0.0),
 	mxStreamType(streamType),
-	mbIsTextBox(false),
-	mbIsTextLine(false),
-	mbIsTextOnPath(false)
+	mState(),
+	mListStates()
 {
 }
 
-OdgGeneratorPrivate::~OdgGeneratorPrivate()
+OdpGeneratorPrivate::~OdpGeneratorPrivate()
 {
 
 	for (std::vector<DocumentElement *>::iterator iterBody = mBodyElements.begin(); iterBody != mBodyElements.end(); ++iterBody)
@@ -209,7 +341,108 @@ OdgGeneratorPrivate::~OdgGeneratorPrivate()
 	mFontManager.clean();
 }
 
-std::string OdgGeneratorPrivate::getDocumentType() const
+void OdpGeneratorPrivate::writeNotesStyles()
+{
+	{
+		WPXPropertyList styleProps;
+		styleProps.insert("style:name", "PresentationNotesPage");
+		styleProps.insert("style:family", "drawing-page");
+
+		mpHandler->startElement("style:style", styleProps);
+
+		WPXPropertyList pageProps;
+		pageProps.insert("presentation:display-header", "true");
+		pageProps.insert("presentation:display-footer", "true");
+		pageProps.insert("presentation:display-date-time", "true");
+		pageProps.insert("presentation:display-page-number", "false");
+
+		mpHandler->startElement("style:drawing-page-properties", pageProps);
+		mpHandler->endElement("style:drawing-page-properties");
+
+		mpHandler->endElement("style:style");
+	}
+
+	{
+		WPXPropertyList styleProps;
+		styleProps.insert("style:name", "PresentationNotesFrame");
+		styleProps.insert("style:family", "presentation");
+
+		mpHandler->startElement("style:style", styleProps);
+
+		WPXPropertyList graphicProps;
+		graphicProps.insert("draw:fill", "none");
+		graphicProps.insert("fo:min-height", "5in");
+
+		mpHandler->startElement("style:graphic-properties", graphicProps);
+		mpHandler->endElement("style:graphic-properties");
+
+		WPXPropertyList paraProps;
+		paraProps.insert("fo:margin-left", "0.24in");
+		paraProps.insert("fo:margin-right", "0in");
+		paraProps.insert("fo:text-indent", "0in");
+
+		mpHandler->startElement("style:para-properties", paraProps);
+		mpHandler->endElement("style:para-properties");
+
+		mpHandler->endElement("style:style");
+	}
+
+	{
+		WPXPropertyList styleProps;
+		styleProps.insert("style:name", "PresentationNotesTextBox");
+		styleProps.insert("style:family", "graphic");
+
+		mpHandler->startElement("style:style", styleProps);
+
+		WPXPropertyList graphicProps;
+		graphicProps.insert("draw:fill", "none");
+
+		mpHandler->startElement("style:graphic-properties", graphicProps);
+		mpHandler->endElement("style:graphic-properties");
+
+		mpHandler->endElement("style:style");
+	}
+}
+
+void OdpGeneratorPrivate::openListLevel(TagOpenElement *pListLevelOpenElement)
+{
+	if (!mListStates.top().mbListElementOpened.empty() &&
+	        !mListStates.top().mbListElementOpened.top())
+	{
+		mBodyElements.push_back(new TagOpenElement("text:list-item"));
+		mListStates.top().mbListElementOpened.top() = true;
+	}
+
+	mListStates.top().mbListElementOpened.push(false);
+	if (mListStates.top().mbListElementOpened.size() == 1)
+	{
+		// add a sanity check ( to avoid a crash if mpCurrentListStyle is NULL)
+		if (mListStates.top().mpCurrentListStyle)
+		{
+			pListLevelOpenElement->addAttribute("text:style-name", mListStates.top().mpCurrentListStyle->getName());
+		}
+	}
+}
+
+void OdpGeneratorPrivate::closeListLevel()
+{
+	if (mListStates.top().mbListElementOpened.empty())
+	{
+		// this implies that openListLevel was not called, so it is better to stop here
+		ODFGEN_DEBUG_MSG(("OdtGenerator: Attempting to close an unexisting level\n"));
+		return;
+	}
+	if (mListStates.top().mbListElementOpened.top())
+	{
+		mBodyElements.push_back(new TagCloseElement("text:list-item"));
+		mListStates.top().mbListElementOpened.top() = false;
+	}
+
+	mBodyElements.push_back(new TagCloseElement("text:list"));
+	mListStates.top().mbListElementOpened.pop();
+}
+
+std::string OdpGeneratorPrivate::getDocumentType() const
 {
 	switch(mxStreamType)
 	{
@@ -228,27 +461,31 @@ std::string OdgGeneratorPrivate::getDocumentType() const
 	}
 }
 
-OdgGenerator::OdgGenerator(OdfDocumentHandler *pHandler, const OdfStreamType streamType):
-	mpImpl(new OdgGeneratorPrivate(pHandler, streamType))
+OdpGenerator::OdpGenerator(OdfDocumentHandler *pHandler, const OdfStreamType streamType):
+	mpImpl(new OdpGeneratorPrivate(pHandler, streamType))
 {
 	mpImpl->mpHandler->startDocument();
 	TagOpenElement tmpOfficeDocumentContent(mpImpl->getDocumentType().c_str());
 	tmpOfficeDocumentContent.addAttribute("xmlns:office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
+	tmpOfficeDocumentContent.addAttribute("xmlns:presentation", "urn:oasis:names:tc:opendocument:xmlns:presentation:1.0");
 	tmpOfficeDocumentContent.addAttribute("xmlns:style", "urn:oasis:names:tc:opendocument:xmlns:style:1.0");
+	tmpOfficeDocumentContent.addAttribute("xmlns:table", "urn:oasis:names:tc:opendocument:xmlns:table:1.0");
 	tmpOfficeDocumentContent.addAttribute("xmlns:text", "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
 	tmpOfficeDocumentContent.addAttribute("xmlns:draw", "urn:oasis:names:tc:opendocument:xmlns:drawing:1.0");
 	tmpOfficeDocumentContent.addAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
 	tmpOfficeDocumentContent.addAttribute("xmlns:svg", "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0");
 	tmpOfficeDocumentContent.addAttribute("xmlns:fo", "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0");
 	tmpOfficeDocumentContent.addAttribute("xmlns:config", "urn:oasis:names:tc:opendocument:xmlns:config:1.0");
+	// WARNING: this is not ODF!
 	tmpOfficeDocumentContent.addAttribute("xmlns:ooo", "http://openoffice.org/2004/office");
+	tmpOfficeDocumentContent.addAttribute("xmlns:officeooo", "http://openoffice.org/2009/office");
 	tmpOfficeDocumentContent.addAttribute("office:version", "1.0");
 	if (mpImpl->mxStreamType == ODF_FLAT_XML)
-		tmpOfficeDocumentContent.addAttribute("office:mimetype", "application/vnd.oasis.opendocument.graphics");
+		tmpOfficeDocumentContent.addAttribute("office:mimetype", "application/vnd.oasis.opendocument.presentation");
 	tmpOfficeDocumentContent.write(mpImpl->mpHandler);
 }
 
-OdgGenerator::~OdgGenerator()
+OdpGenerator::~OdpGenerator()
 {
 	if ((mpImpl->mxStreamType == ODF_FLAT_XML) || (mpImpl->mxStreamType == ODF_SETTINGS_XML))
 	{
@@ -342,6 +579,14 @@ OdgGenerator::~OdgGenerator()
 		}
 		mpImpl->mParagraphManager.write(mpImpl->mpHandler);
 		mpImpl->mSpanManager.write(mpImpl->mpHandler);
+
+		// writing out the table styles
+		for (std::vector<TableStyle *>::const_iterator iterTableStyles = mpImpl->mTableStyles.begin(); iterTableStyles != mpImpl->mTableStyles.end(); ++iterTableStyles)
+		{
+			(*iterTableStyles)->write(mpImpl->mpHandler);
+		}
+
+		mpImpl->writeNotesStyles();
 	}
 #ifdef MULTIPAGE_WORKAROUND
 	if ((mpImpl->mxStreamType == ODF_FLAT_XML) || (mpImpl->mxStreamType == ODF_STYLES_XML))
@@ -415,7 +660,7 @@ OdgGenerator::~OdgGenerator()
 	{
 		TagOpenElement("office:body").write(mpImpl->mpHandler);
 
-		TagOpenElement("office:drawing").write(mpImpl->mpHandler);
+		TagOpenElement("office:presentation").write(mpImpl->mpHandler);
 
 		for (std::vector<DocumentElement *>::const_iterator bodyIter = mpImpl->mBodyElements.begin();
 		        bodyIter != mpImpl->mBodyElements.end(); ++bodyIter)
@@ -423,7 +668,7 @@ OdgGenerator::~OdgGenerator()
 			(*bodyIter)->write(mpImpl->mpHandler);
 		}
 
-		mpImpl->mpHandler->endElement("office:drawing");
+		mpImpl->mpHandler->endElement("office:presentation");
 		mpImpl->mpHandler->endElement("office:body");
 	}
 
@@ -434,7 +679,19 @@ OdgGenerator::~OdgGenerator()
 	delete mpImpl;
 }
 
-void OdgGenerator::startGraphics(const ::WPXPropertyList &propList)
+void OdpGenerator::startDocument(const ::WPXPropertyList &/*propList*/)
+{
+}
+
+void OdpGenerator::endDocument()
+{
+}
+
+void OdpGenerator::setDocumentMetaData(const ::WPXPropertyList &/*propList*/)
+{
+}
+
+void OdpGenerator::startSlide(const ::WPXPropertyList &propList)
 {
 	if (propList["svg:width"])
 	{
@@ -525,35 +782,33 @@ void OdgGenerator::startGraphics(const ::WPXPropertyList &propList)
 	mpImpl->mPageAutomaticStyles.push_back(new TagCloseElement("style:style"));
 }
 
-void OdgGenerator::endGraphics()
+void OdpGenerator::endSlide()
 {
 	mpImpl->mBodyElements.push_back(new TagCloseElement("draw:page"));
 	mpImpl->miPageIndex++;
 }
 
-void OdgGenerator::setStyle(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &gradient)
+void OdpGenerator::setStyle(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &gradient)
 {
 	mpImpl->mxStyle.clear();
 	mpImpl->mxStyle = propList;
 	mpImpl->mxGradient = gradient;
 }
 
-void OdgGenerator::startLayer(const ::WPXPropertyList & /* propList */)
+void OdpGenerator::startLayer(const ::WPXPropertyList & /* propList */)
 {
-	mpImpl->mBodyElements.push_back(new TagOpenElement("draw:g"));
 }
 
-void OdgGenerator::endLayer()
+void OdpGenerator::endLayer()
 {
-	mpImpl->mBodyElements.push_back(new TagCloseElement("draw:g"));
 }
 
-void OdgGenerator::drawRectangle(const ::WPXPropertyList &propList)
+void OdpGenerator::drawRectangle(const ::WPXPropertyList &propList)
 {
 	if (!propList["svg:x"] || !propList["svg:y"] ||
 	        !propList["svg:width"] || !propList["svg:height"])
 	{
-		ODFGEN_DEBUG_MSG(("OdgGenerator::drawRectangle: position undefined\n"));
+		ODFGEN_DEBUG_MSG(("OdpGenerator::drawRectangle: position undefined\n"));
 		return;
 	}
 	mpImpl->_writeGraphicsStyle();
@@ -574,11 +829,11 @@ void OdgGenerator::drawRectangle(const ::WPXPropertyList &propList)
 	mpImpl->mBodyElements.push_back(new TagCloseElement("draw:rect"));
 }
 
-void OdgGenerator::drawEllipse(const ::WPXPropertyList &propList)
+void OdpGenerator::drawEllipse(const ::WPXPropertyList &propList)
 {
 	if (!propList["svg:rx"] || !propList["svg:ry"] || !propList["svg:cx"] || !propList["svg:cy"])
 	{
-		ODFGEN_DEBUG_MSG(("OdgGenerator::drawEllipse: position undefined\n"));
+		ODFGEN_DEBUG_MSG(("OdpGenerator::drawEllipse: position undefined\n"));
 		return;
 	}
 	mpImpl->_writeGraphicsStyle();
@@ -629,17 +884,17 @@ void OdgGenerator::drawEllipse(const ::WPXPropertyList &propList)
 	mpImpl->mBodyElements.push_back(new TagCloseElement("draw:ellipse"));
 }
 
-void OdgGenerator::drawPolyline(const ::WPXPropertyListVector &vertices)
+void OdpGenerator::drawPolyline(const ::WPXPropertyListVector &vertices)
 {
 	mpImpl->_drawPolySomething(vertices, false);
 }
 
-void OdgGenerator::drawPolygon(const ::WPXPropertyListVector &vertices)
+void OdpGenerator::drawPolygon(const ::WPXPropertyListVector &vertices)
 {
 	mpImpl->_drawPolySomething(vertices, true);
 }
 
-void OdgGeneratorPrivate::_drawPolySomething(const ::WPXPropertyListVector &vertices, bool isClosed)
+void OdpGeneratorPrivate::_drawPolySomething(const ::WPXPropertyListVector &vertices, bool isClosed)
 {
 	if(vertices.count() < 2)
 		return;
@@ -648,7 +903,7 @@ void OdgGeneratorPrivate::_drawPolySomething(const ::WPXPropertyListVector &vert
 	{
 		if (!vertices[0]["svg:x"]||!vertices[0]["svg:y"]||!vertices[1]["svg:x"]||!vertices[1]["svg:y"])
 		{
-			ODFGEN_DEBUG_MSG(("OdgGeneratorPrivate::_drawPolySomething: some vertices are not defined\n"));
+			ODFGEN_DEBUG_MSG(("OdpGeneratorPrivate::_drawPolySomething: some vertices are not defined\n"));
 			return;
 		}
 		_writeGraphicsStyle();
@@ -688,7 +943,7 @@ void OdgGeneratorPrivate::_drawPolySomething(const ::WPXPropertyListVector &vert
 	}
 }
 
-void OdgGeneratorPrivate::_drawPath(const WPXPropertyListVector &path)
+void OdpGeneratorPrivate::_drawPath(const WPXPropertyListVector &path)
 {
 	if(path.count() == 0)
 		return;
@@ -722,7 +977,7 @@ void OdgGeneratorPrivate::_drawPath(const WPXPropertyListVector &path)
 		{
 			if (!coordOk)
 			{
-				ODFGEN_DEBUG_MSG(("OdgGeneratorPrivate::_drawPath: the first point has no coordinate\n"));
+				ODFGEN_DEBUG_MSG(("OdpGeneratorPrivate::_drawPath: the first point has no coordinate\n"));
 				continue;
 			}
 			qx = px = x = path[k]["svg:x"]->getDouble();
@@ -788,7 +1043,7 @@ void OdgGeneratorPrivate::_drawPath(const WPXPropertyListVector &path)
 		}
 		else if (action[0] != 'M' && action[0] != 'L' && action[0] != 'H' && action[0] != 'V')
 		{
-			ODFGEN_DEBUG_MSG(("OdgGeneratorPrivate::_drawPath: problem reading a path\n"));
+			ODFGEN_DEBUG_MSG(("OdpGeneratorPrivate::_drawPath: problem reading a path\n"));
 		}
 		px = (px > xmin ? xmin : px);
 		py = (py > ymin ? ymin : py);
@@ -885,12 +1140,12 @@ void OdgGeneratorPrivate::_drawPath(const WPXPropertyListVector &path)
 	mBodyElements.push_back(new TagCloseElement("draw:path"));
 }
 
-void OdgGenerator::drawPath(const WPXPropertyListVector &path)
+void OdpGenerator::drawPath(const WPXPropertyListVector &path)
 {
 	mpImpl->_drawPath(path);
 }
 
-void OdgGenerator::drawGraphicObject(const ::WPXPropertyList &propList, const ::WPXBinaryData &binaryData)
+void OdpGenerator::drawGraphicObject(const ::WPXPropertyList &propList, const ::WPXBinaryData &binaryData)
 {
 	if (!propList["libwpg:mime-type"] || propList["libwpg:mime-type"]->getStr().len() <= 0)
 		return;
@@ -995,7 +1250,11 @@ void OdgGenerator::drawGraphicObject(const ::WPXPropertyList &propList, const ::
 	mpImpl->mBodyElements.push_back(new TagCloseElement("draw:frame"));
 }
 
-void OdgGeneratorPrivate::_writeGraphicsStyle()
+void OdpGenerator::drawConnector(const ::WPXPropertyList &/*propList*/, const ::WPXPropertyListVector &/*path*/)
+{
+}
+
+void OdpGeneratorPrivate::_writeGraphicsStyle()
 {
 	TagOpenElement *pStyleStyleElement = new TagOpenElement("style:style");
 	WPXString sValue;
@@ -1014,7 +1273,7 @@ void OdgGeneratorPrivate::_writeGraphicsStyle()
 	miGraphicsStyleIndex++;
 }
 
-void OdgGeneratorPrivate::_updateGraphicPropertiesElement(TagOpenElement &element, ::WPXPropertyList const &style, ::WPXPropertyListVector const &gradient)
+void OdpGeneratorPrivate::_updateGraphicPropertiesElement(TagOpenElement &element, ::WPXPropertyList const &style, ::WPXPropertyListVector const &gradient)
 {
 	bool bUseOpacityGradient = false;
 
@@ -1383,15 +1642,25 @@ void OdgGeneratorPrivate::_updateGraphicPropertiesElement(TagOpenElement &elemen
 		element.addAttribute("style:mirror", style["style:mirror"]->getStr());
 }
 
-void OdgGenerator::startEmbeddedGraphics(const WPXPropertyList &)
+void OdpGenerator::startEmbeddedGraphics(const WPXPropertyList &)
 {
 }
 
-void OdgGenerator::endEmbeddedGraphics()
+void OdpGenerator::endEmbeddedGraphics()
 {
 }
 
-void OdgGenerator::startTextObject(const WPXPropertyList &propList, const WPXPropertyListVector &/*path*/)
+void OdpGenerator::startGroup(const ::WPXPropertyList &/*propList*/)
+{
+	mpImpl->mBodyElements.push_back(new TagOpenElement("draw:g"));
+}
+
+void OdpGenerator::endGroup()
+{
+	mpImpl->mBodyElements.push_back(new TagCloseElement("draw:g"));
+}
+
+void OdpGenerator::startTextObject(const WPXPropertyList &propList, const WPXPropertyListVector &/*path*/)
 {
 	TagOpenElement *pDrawFrameOpenElement = new TagOpenElement("draw:frame");
 	TagOpenElement *pStyleStyleOpenElement = new TagOpenElement("style:style");
@@ -1530,20 +1799,20 @@ void OdgGenerator::startTextObject(const WPXPropertyList &propList, const WPXPro
 	mpImpl->mGraphicsAutomaticStyles.push_back(pStyleGraphicPropertiesOpenElement);
 	mpImpl->mGraphicsAutomaticStyles.push_back(new TagCloseElement("style:graphic-properties"));
 	mpImpl->mGraphicsAutomaticStyles.push_back(new TagCloseElement("style:style"));
-	mpImpl->mbIsTextBox = true;
+	mpImpl->mState.mbIsTextBox = true;
 }
 
-void OdgGenerator::endTextObject()
+void OdpGenerator::endTextObject()
 {
-	if (mpImpl->mbIsTextBox)
+	if (mpImpl->mState.mbIsTextBox)
 	{
 		mpImpl->mBodyElements.push_back(new TagCloseElement("draw:text-box"));
 		mpImpl->mBodyElements.push_back(new TagCloseElement("draw:frame"));
-		mpImpl->mbIsTextBox = false;
+		mpImpl->mState.mbIsTextBox = false;
 	}
 }
 
-void OdgGenerator::startTextLine(const WPXPropertyList &propList)
+void OdpGenerator::openParagraph(const WPXPropertyList &propList, const WPXPropertyListVector &/*tabStops*/)
 {
 	WPXPropertyList finalPropList(propList);
 	finalPropList.insert("style:parent-style-name", "Standard");
@@ -1556,12 +1825,12 @@ void OdgGenerator::startTextLine(const WPXPropertyList &propList)
 	mpImpl->mBodyElements.push_back(pParagraphOpenElement);
 }
 
-void OdgGenerator::endTextLine()
+void OdpGenerator::closeParagraph()
 {
 	mpImpl->mBodyElements.push_back(new TagCloseElement("text:p"));
 }
 
-void OdgGenerator::startTextSpan(const WPXPropertyList &propList)
+void OdpGenerator::openSpan(const WPXPropertyList &propList)
 {
 	if (propList["style:font-name"])
 		mpImpl->mFontManager.findOrAdd(propList["style:font-name"]->getStr().cstr());
@@ -1573,46 +1842,364 @@ void OdgGenerator::startTextSpan(const WPXPropertyList &propList)
 	mpImpl->mBodyElements.push_back(pSpanOpenElement);
 }
 
-void OdgGenerator::endTextSpan()
+void OdpGenerator::closeSpan()
 {
 	mpImpl->mBodyElements.push_back(new TagCloseElement("text:span"));
 }
 
-void OdgGenerator::insertText(const WPXString &text)
+void OdpGenerator::insertText(const WPXString &text)
 {
-	WPXString out;
-	WPXString::Iter i(text);
-	for (i.rewind(); i.next();)
+	mpImpl->mBodyElements.push_back(new TextElement(text));
+}
+
+void OdpGenerator::insertTab()
+{
+	mpImpl->mBodyElements.push_back(new TagOpenElement("text:tab"));
+	mpImpl->mBodyElements.push_back(new TagCloseElement("text:tab"));
+}
+
+void OdpGenerator::insertSpace()
+{
+	mpImpl->mBodyElements.push_back(new TagOpenElement("text:s"));
+	mpImpl->mBodyElements.push_back(new TagCloseElement("text:s"));
+}
+
+void OdpGenerator::insertLineBreak()
+{
+	mpImpl->mBodyElements.push_back(new TagOpenElement("text:line-break"));
+	mpImpl->mBodyElements.push_back(new TagCloseElement("text:line-break"));
+}
+
+void OdpGenerator::insertField(const WPXString &/*type*/, const ::WPXPropertyList &/*propList*/)
+{
+}
+
+void OdpGenerator::openOrderedListLevel(const ::WPXPropertyList &/*propList*/)
+{
+	if (mpImpl->mListStates.top().mbListElementParagraphOpened)
 	{
-		if ((*i()) == '\n' || (*i()) == '\t')
-		{
-			if (out.len() != 0)
-			{
-				DocumentElement *pText = new TextElement(out);
-				mpImpl->mBodyElements.push_back(pText);
-				out.clear();
-			}
-			if ((*i()) == '\n')
-			{
-				mpImpl->mBodyElements.push_back(new TagOpenElement("text:line-break"));
-				mpImpl->mBodyElements.push_back(new TagCloseElement("text:line-break"));
-			}
-			else if ((*i()) == '\t')
-			{
-				mpImpl->mBodyElements.push_back(new TagOpenElement("text:tab"));
-				mpImpl->mBodyElements.push_back(new TagCloseElement("text:tab"));
-			}
-		}
-		else
-		{
-			out.append(i());
-		}
+		mpImpl->mBodyElements.push_back(new TagCloseElement("text:p"));
+		mpImpl->mListStates.top().mbListElementParagraphOpened = false;
 	}
-	if (out.len() != 0)
+
+	TagOpenElement *pListLevelOpenElement = new TagOpenElement("text:list");
+	mpImpl->openListLevel(pListLevelOpenElement);
+
+	mpImpl->mBodyElements.push_back(pListLevelOpenElement);
+}
+
+void OdpGenerator::openUnorderedListLevel(const ::WPXPropertyList &/*propList*/)
+{
+	if (mpImpl->mListStates.top().mbListElementParagraphOpened)
 	{
-		DocumentElement *pText = new TextElement(out);
-		mpImpl->mBodyElements.push_back(pText);
+		mpImpl->mBodyElements.push_back(new TagCloseElement("text:p"));
+		mpImpl->mListStates.top().mbListElementParagraphOpened = false;
 	}
+	TagOpenElement *pListLevelOpenElement = new TagOpenElement("text:list");
+	mpImpl->openListLevel(pListLevelOpenElement);
+
+	mpImpl->mBodyElements.push_back(pListLevelOpenElement);
+}
+
+void OdpGenerator::closeOrderedListLevel()
+{
+	mpImpl->closeListLevel();
+}
+
+void OdpGenerator::closeUnorderedListLevel()
+{
+	mpImpl->closeListLevel();
+}
+
+void OdpGenerator::openListElement(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &tabStops)
+{
+	if (mpImpl->mListStates.top().mbListElementOpened.top())
+	{
+		mpImpl->mBodyElements.push_back(new TagCloseElement("text:list-item"));
+		mpImpl->mListStates.top().mbListElementOpened.top() = false;
+	}
+
+	WPXPropertyList finalPropList(propList);
+	finalPropList.insert("style:parent-style-name", "Standard");
+	WPXString paragName = mpImpl->mParagraphManager.findOrAdd(finalPropList, tabStops);
+
+	TagOpenElement *pOpenListItem = new TagOpenElement("text:list-item");
+	if (propList["text:start-value"] && propList["text:start-value"]->getInt() > 0)
+		pOpenListItem->addAttribute("text:start-value", propList["text:start-value"]->getStr());
+	mpImpl->mBodyElements.push_back(pOpenListItem);
+
+	TagOpenElement *pOpenListElementParagraph = new TagOpenElement("text:p");
+	pOpenListElementParagraph->addAttribute("text:style-name", paragName);
+	mpImpl->mBodyElements.push_back(pOpenListElementParagraph);
+
+	mpImpl->mListStates.top().mbListElementOpened.top() = true;
+	mpImpl->mListStates.top().mbListElementParagraphOpened = true;
+}
+
+void OdpGenerator::closeListElement()
+{
+	// this code is kind of tricky, because we don't actually close the list element (because this list element
+	// could contain another list level in OOo's implementation of lists). that is done in the closeListLevel
+	// code (or when we open another list element)
+
+	if (mpImpl->mListStates.top().mbListElementParagraphOpened)
+	{
+		mpImpl->mBodyElements.push_back(new TagCloseElement("text:p"));
+		mpImpl->mListStates.top().mbListElementParagraphOpened = false;
+	}
+}
+
+void OdpGenerator::openTable(const ::WPXPropertyList &propList, const ::WPXPropertyListVector &columns)
+{
+	if (mpImpl->mState.mInComment)
+		return;
+
+	WPXString sTableName;
+	sTableName.sprintf("Table%i", mpImpl->mTableStyles.size());
+
+	// FIXME: we base the table style off of the page's margin left, ignoring (potential) wordperfect margin
+	// state which is transmitted inside the page. could this lead to unacceptable behaviour?
+	// WLACH_REFACTORING: characterize this behaviour, probably should nip it at the bud within libwpd
+	TableStyle *pTableStyle = new TableStyle(propList, columns, sTableName.cstr());
+
+	mpImpl->mTableStyles.push_back(pTableStyle);
+
+	mpImpl->mpCurrentTableStyle = pTableStyle;
+
+	// table must be inside a frame
+	TagOpenElement *pFrameOpenElement = new TagOpenElement("draw:frame");
+
+	pFrameOpenElement->addAttribute("draw:style-name", "standard");
+	if (propList["svg:x"])
+		pFrameOpenElement->addAttribute("svg:x", propList["svg:x"]->getStr());
+	if (propList["svg:y"])
+		pFrameOpenElement->addAttribute("svg:y", propList["svg:y"]->getStr());
+	if (propList["svg:width"])
+		pFrameOpenElement->addAttribute("svg:width", propList["svg:width"]->getStr());
+	if (propList["svg:height"])
+		pFrameOpenElement->addAttribute("svg:height", propList["svg:height"]->getStr());
+
+	mpImpl->mBodyElements.push_back(pFrameOpenElement);
+
+	TagOpenElement *pTableOpenElement = new TagOpenElement("table:table");
+
+	pTableOpenElement->addAttribute("table:name", sTableName.cstr());
+	pTableOpenElement->addAttribute("table:style-name", sTableName.cstr());
+	mpImpl->mBodyElements.push_back(pTableOpenElement);
+
+	for (int i=0; i<pTableStyle->getNumColumns(); ++i)
+	{
+		TagOpenElement *pTableColumnOpenElement = new TagOpenElement("table:table-column");
+		WPXString sColumnStyleName;
+		sColumnStyleName.sprintf("%s.Column%i", sTableName.cstr(), (i+1));
+		pTableColumnOpenElement->addAttribute("table:style-name", sColumnStyleName.cstr());
+		mpImpl->mBodyElements.push_back(pTableColumnOpenElement);
+
+		TagCloseElement *pTableColumnCloseElement = new TagCloseElement("table:table-column");
+		mpImpl->mBodyElements.push_back(pTableColumnCloseElement);
+	}
+}
+
+void OdpGenerator::openTableRow(const ::WPXPropertyList &propList)
+{
+	if (mpImpl->mState.mInComment)
+		return;
+
+	if (!mpImpl->mpCurrentTableStyle)
+	{
+		ODFGEN_DEBUG_MSG(("OdtGenerator::openTableRow called with no table\n"));
+		return;
+	}
+
+	if (propList["libwpd:is-header-row"] && (propList["libwpd:is-header-row"]->getInt()))
+	{
+		mpImpl->mBodyElements.push_back(new TagOpenElement("table:table-header-rows"));
+		mpImpl->mState.mHeaderRow = true;
+	}
+
+	WPXString sTableRowStyleName;
+	sTableRowStyleName.sprintf("%s.Row%i", mpImpl->mpCurrentTableStyle->getName().cstr(), mpImpl->mpCurrentTableStyle->getNumTableRowStyles());
+	TableRowStyle *pTableRowStyle = new TableRowStyle(propList, sTableRowStyleName.cstr());
+	mpImpl->mpCurrentTableStyle->addTableRowStyle(pTableRowStyle);
+
+	TagOpenElement *pTableRowOpenElement = new TagOpenElement("table:table-row");
+	pTableRowOpenElement->addAttribute("table:style-name", sTableRowStyleName);
+	mpImpl->mBodyElements.push_back(pTableRowOpenElement);
+}
+
+void OdpGenerator::closeTableRow()
+{
+	if (mpImpl->mState.mInComment || !mpImpl->mpCurrentTableStyle)
+		return;
+
+	mpImpl->mBodyElements.push_back(new TagCloseElement("table:table-row"));
+	if (mpImpl->mState.mHeaderRow)
+	{
+		mpImpl->mBodyElements.push_back(new TagCloseElement("table:table-header-rows"));
+		mpImpl->mState.mHeaderRow = false;
+	}
+}
+
+void OdpGenerator::openTableCell(const ::WPXPropertyList &propList)
+{
+	if (!mpImpl->mpCurrentTableStyle)
+	{
+		ODFGEN_DEBUG_MSG(("OdtGenerator::openTableCell called with no table\n"));
+		return;
+	}
+
+	if (mpImpl->mState.mTableCellOpened)
+	{
+		ODFGEN_DEBUG_MSG(("a table cell in a table cell?!\n"));
+		return;
+	}
+
+	WPXString sTableCellStyleName;
+	sTableCellStyleName.sprintf( "%s.Cell%i", mpImpl->mpCurrentTableStyle->getName().cstr(), mpImpl->mpCurrentTableStyle->getNumTableCellStyles());
+	TableCellStyle *pTableCellStyle = new GraphicTableCellStyle(propList, sTableCellStyleName.cstr());
+	mpImpl->mpCurrentTableStyle->addTableCellStyle(pTableCellStyle);
+
+	TagOpenElement *pTableCellOpenElement = new TagOpenElement("table:table-cell");
+	pTableCellOpenElement->addAttribute("table:style-name", sTableCellStyleName);
+	if (propList["table:number-columns-spanned"])
+		pTableCellOpenElement->addAttribute("table:number-columns-spanned",
+		                                    propList["table:number-columns-spanned"]->getStr().cstr());
+	if (propList["table:number-rows-spanned"])
+		pTableCellOpenElement->addAttribute("table:number-rows-spanned",
+		                                    propList["table:number-rows-spanned"]->getStr().cstr());
+	mpImpl->mBodyElements.push_back(pTableCellOpenElement);
+
+	mpImpl->mState.mTableCellOpened = true;
+}
+
+void OdpGenerator::closeTableCell()
+{
+	if (mpImpl->mState.mInComment || !mpImpl->mpCurrentTableStyle)
+		return;
+
+	if (!mpImpl->mState.mTableCellOpened)
+	{
+		ODFGEN_DEBUG_MSG(("no table cell is opened\n"));
+		return;
+	}
+
+	mpImpl->mBodyElements.push_back(new TagCloseElement("table:table-cell"));
+	mpImpl->mState.mTableCellOpened = false;
+}
+
+void OdpGenerator::insertCoveredTableCell(const ::WPXPropertyList &/*propList*/)
+{
+	if (mpImpl->mState.mInComment || !mpImpl->mpCurrentTableStyle)
+		return;
+
+	mpImpl->mBodyElements.push_back(new TagOpenElement("table:covered-table-cell"));
+	mpImpl->mBodyElements.push_back(new TagCloseElement("table:covered-table-cell"));
+}
+
+void OdpGenerator::closeTable()
+{
+	if (!mpImpl->mState.mInComment)
+	{
+		mpImpl->mBodyElements.push_back(new TagCloseElement("table:table"));
+		mpImpl->mBodyElements.push_back(new TagCloseElement("draw:frame"));
+	}
+}
+
+void OdpGenerator::startComment(const ::WPXPropertyList &propList)
+{
+	if (mpImpl->mState.mInComment)
+	{
+		ODFGEN_DEBUG_MSG(("a comment within a comment?!\n"));
+		return;
+	}
+
+	mpImpl->mState.mInComment = true;
+
+	TagOpenElement *const commentElement = new TagOpenElement("officeooo:annotation");
+
+	// position & size
+	if (propList["svg:x"])
+		commentElement->addAttribute("svg:x", doubleToString(72 * propList["svg:x"]->getDouble()));
+	if (propList["svg:y"])
+		commentElement->addAttribute("svg:y", doubleToString(72 * propList["svg:y"]->getDouble()));
+	if (propList["svg:width"])
+		commentElement->addAttribute("svg:width", doubleToString(72 * propList["svg:width"]->getDouble()));
+	if (propList["svg:height"])
+		commentElement->addAttribute("svg:height", doubleToString(72 * propList["svg:height"]->getDouble()));
+
+	mpImpl->mBodyElements.push_back(commentElement);
+}
+
+void OdpGenerator::endComment()
+{
+	if (!mpImpl->mState.mInComment)
+	{
+		ODFGEN_DEBUG_MSG(("there is no comment to close\n"));
+		return;
+	}
+
+	mpImpl->mState.mInComment = false;
+	mpImpl->mBodyElements.push_back(new TagCloseElement("officeooo:annotation"));
+}
+
+void OdpGenerator::startNotes(const ::WPXPropertyList &/*propList*/)
+{
+	if (mpImpl->mState.mInNotes)
+	{
+		ODFGEN_DEBUG_MSG(("notes in notes?!\n"));
+		return;
+	}
+
+	TagOpenElement *const notesElement = new TagOpenElement("presentation:notes");
+	notesElement->addAttribute("draw:style-name", "PresentationNotesPage");
+
+	mpImpl->mBodyElements.push_back(notesElement);
+
+	TagOpenElement *const thumbnailElement = new TagOpenElement("draw:page-thumbnail");
+	thumbnailElement->addAttribute("draw:layer", "layout");
+	thumbnailElement->addAttribute("presentation:class", "page");
+	// TODO: should the dimensions be hardcoded? If not, where
+	// should they come from?
+	thumbnailElement->addAttribute("svg:width", "5.5in");
+	thumbnailElement->addAttribute("svg:height", "4.12in");
+	thumbnailElement->addAttribute("svg:x", "1.5in");
+	thumbnailElement->addAttribute("svg:y", "0.84in");
+	WPXString pageNumber;
+	pageNumber.sprintf("%i", mpImpl->miPageIndex);
+	thumbnailElement->addAttribute("draw:page-number", pageNumber);
+
+	mpImpl->mBodyElements.push_back(thumbnailElement);
+	mpImpl->mBodyElements.push_back(new TagCloseElement("draw:page-thumbnail"));
+
+	TagOpenElement *const frameElement = new TagOpenElement("draw:frame");
+	frameElement->addAttribute("presentation:style-name", "PresentationNotesFrame");
+	frameElement->addAttribute("draw:layer", "layout");
+	frameElement->addAttribute("presentation:class", "notes");
+	frameElement->addAttribute("svg:width", "6.8in");
+	frameElement->addAttribute("svg:height", "4.95in");
+	frameElement->addAttribute("svg:x", "0.85in");
+	frameElement->addAttribute("svg:y", "5.22in");
+
+	mpImpl->mBodyElements.push_back(frameElement);
+
+	mpImpl->mBodyElements.push_back(new TagOpenElement("draw:text-box"));
+
+	mpImpl->mState.mInNotes = true;
+}
+
+void OdpGenerator::endNotes()
+{
+	if (!mpImpl->mState.mInNotes)
+	{
+		ODFGEN_DEBUG_MSG(("no notes opened\n"));
+		return;
+	}
+
+	mpImpl->mState.mInNotes = false;
+
+	mpImpl->mBodyElements.push_back(new TagCloseElement("draw:text-box"));
+	mpImpl->mBodyElements.push_back(new TagCloseElement("draw:frame"));
+	mpImpl->mBodyElements.push_back(new TagCloseElement("presentation:notes"));
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 noexpandtab: */

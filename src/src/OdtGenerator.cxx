@@ -140,7 +140,7 @@ public:
 	OdfEmbeddedObject _findEmbeddedObjectHandler(const WPXString &mimeType);
 	OdfEmbeddedImage _findEmbeddedImageHandler(const WPXString &mimeType);
 
-	WPXString _getFrameName(WPXString val="");
+	unsigned _getObjectId(WPXString val="");
 
 	OdfDocumentHandler *mpHandler;
 	bool mbUsed; // whether or not it has been before (you can only use me once!)
@@ -169,7 +169,7 @@ public:
 
 	std::vector<DocumentElement *> mFrameAutomaticStyles;
 
-	std::map<WPXString, WPXString, ltstr> mFrameLabelMap;
+	std::map<WPXString, unsigned, ltstr> mFrameIdMap;
 
 	// embedded object handlers
 	std::map<WPXString, OdfEmbeddedObject, ltstr > mObjectHandlers;
@@ -219,7 +219,7 @@ OdtGeneratorPrivate::OdtGeneratorPrivate(OdfDocumentHandler *pHandler, const Odf
 	mWriterListStates(),
 	mParagraphManager(), mSpanManager(), mFontManager(),
 	mSectionStyles(), mTableStyles(),
-	mFrameStyles(), mFrameAutomaticStyles(), mFrameLabelMap(),
+	mFrameStyles(), mFrameAutomaticStyles(), mFrameIdMap(),
 	mObjectHandlers(), mImageHandlers(), mMetaData(),
 	miNumListStyles(0),
 	mBodyElements(),
@@ -241,9 +241,9 @@ OdtGeneratorPrivate::OdtGeneratorPrivate(OdfDocumentHandler *pHandler, const Odf
 OdtGeneratorPrivate::~OdtGeneratorPrivate()
 {
 	// clean up the mess we made
-	WRITER_DEBUG_MSG(("WriterWordPerfect: Cleaning up our mess..\n"));
+	ODFGEN_DEBUG_MSG(("OdtGenerator: Cleaning up our mess..\n"));
 
-	WRITER_DEBUG_MSG(("Destroying the body elements\n"));
+	ODFGEN_DEBUG_MSG(("OdtGenerator: Destroying the body elements\n"));
 	for (std::vector<DocumentElement *>::iterator iterBody = mBodyElements.begin(); iterBody != mBodyElements.end(); ++iterBody)
 	{
 		delete (*iterBody);
@@ -310,16 +310,15 @@ OdfEmbeddedImage OdtGeneratorPrivate::_findEmbeddedImageHandler(const WPXString 
 	return 0;
 }
 
-WPXString OdtGeneratorPrivate::_getFrameName(WPXString val)
+unsigned OdtGeneratorPrivate::_getObjectId(WPXString val)
 {
 	bool hasLabel = val.cstr() && val.len();
-	if (hasLabel && mFrameLabelMap.find(val) != mFrameLabelMap.end())
-		return mFrameLabelMap.find(val)->second;
-	WPXString res;
-	res.sprintf("Object%i", miObjectNumber++);
+	if (hasLabel && mFrameIdMap.find(val) != mFrameIdMap.end())
+		return mFrameIdMap.find(val)->second;
+	unsigned id=miObjectNumber++;
 	if (hasLabel)
-		mFrameLabelMap[val]=res;
-	return res;
+		mFrameIdMap[val]=id;
+	return id;
 }
 
 OdtGenerator::OdtGenerator(OdfDocumentHandler *pHandler, const OdfStreamType streamType) :
@@ -429,12 +428,12 @@ void OdtGeneratorPrivate::_writePageLayouts(OdfDocumentHandler *pHandler)
 
 bool OdtGeneratorPrivate::_writeTargetDocument(OdfDocumentHandler *pHandler)
 {
-	WRITER_DEBUG_MSG(("WriterWordPerfect: Document Body: Printing out the header stuff..\n"));
+	ODFGEN_DEBUG_MSG(("OdtGenerator: Document Body: Printing out the header stuff..\n"));
 
-	WRITER_DEBUG_MSG(("WriterWordPerfect: Document Body: Start Document\n"));
+	ODFGEN_DEBUG_MSG(("OdtGenerator: Document Body: Start Document\n"));
 	mpHandler->startDocument();
 
-	WRITER_DEBUG_MSG(("WriterWordPerfect: Document Body: preamble\n"));
+	ODFGEN_DEBUG_MSG(("OdtGenerator: Document Body: preamble\n"));
 	WPXPropertyList docContentPropList;
 	docContentPropList.insert("xmlns:office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
 	docContentPropList.insert("xmlns:meta", "urn:oasis:names:tc:opendocument:xmlns:meta:1.0");
@@ -473,7 +472,7 @@ bool OdtGeneratorPrivate::_writeTargetDocument(OdfDocumentHandler *pHandler)
 	// write out the font styles
 	mFontManager.writeFontsDeclaration(mpHandler);
 
-	WRITER_DEBUG_MSG(("WriterWordPerfect: Document Body: Writing out the styles..\n"));
+	ODFGEN_DEBUG_MSG(("OdtGenerator: Document Body: Writing out the styles..\n"));
 
 	// write default styles
 	_writeDefaultStyles(mpHandler);
@@ -516,7 +515,7 @@ bool OdtGeneratorPrivate::_writeTargetDocument(OdfDocumentHandler *pHandler)
 
 	_writeMasterPages(pHandler);
 
-	WRITER_DEBUG_MSG(("WriterWordPerfect: Document Body: Writing out the document..\n"));
+	ODFGEN_DEBUG_MSG(("OdtGenerator: Document Body: Writing out the document..\n"));
 	// writing out the document
 	TagOpenElement("office:body").write(mpHandler);
 	TagOpenElement("office:text").write(mpHandler);
@@ -525,7 +524,7 @@ bool OdtGeneratorPrivate::_writeTargetDocument(OdfDocumentHandler *pHandler)
 	{
 		(*iterBodyElements)->write(pHandler);
 	}
-	WRITER_DEBUG_MSG(("WriterWordPerfect: Document Body: Finished writing all doc els..\n"));
+	ODFGEN_DEBUG_MSG(("OdtGenerator: Document Body: Finished writing all doc els..\n"));
 
 	pHandler->endElement("office:text");
 	pHandler->endElement("office:body");
@@ -731,7 +730,7 @@ void OdtGeneratorPrivate::_retrieveListStyle(int id)
 		return;
 	}
 
-	WRITER_DEBUG_MSG(("impossible to find a list with id=%d\n",id));
+	ODFGEN_DEBUG_MSG(("OdtGenerator: impossible to find a list with id=%d\n",id));
 }
 
 void OdtGenerator::defineOrderedListLevel(const WPXPropertyList &propList)
@@ -753,7 +752,7 @@ void OdtGenerator::defineOrderedListLevel(const WPXPropertyList &propList)
 	        (propList["libwpd:level"] && propList["libwpd:level"]->getInt()==1 &&
 	         (propList["text:start-value"] && propList["text:start-value"]->getInt() != int(mpImpl->mWriterListStates.top().miLastListNumber+1))))
 	{
-		WRITER_DEBUG_MSG(("Attempting to create a new ordered list style (listid: %i)\n", id));
+		ODFGEN_DEBUG_MSG(("OdtGenerator: Attempting to create a new ordered list style (listid: %i)\n", id));
 		WPXString sName;
 		sName.sprintf("OL%i", mpImpl->miNumListStyles);
 		mpImpl->miNumListStyles++;
@@ -787,7 +786,7 @@ void OdtGenerator::defineUnorderedListLevel(const WPXPropertyList &propList)
 
 	if (pListStyle == 0)
 	{
-		WRITER_DEBUG_MSG(("Attempting to create a new unordered list style (listid: %i)\n", id));
+		ODFGEN_DEBUG_MSG(("OdtGenerator: Attempting to create a new unordered list style (listid: %i)\n", id));
 		WPXString sName;
 		sName.sprintf("UL%i", mpImpl->miNumListStyles);
 		mpImpl->miNumListStyles++;
@@ -879,7 +878,7 @@ void OdtGeneratorPrivate::_closeListLevel()
 	if (mWriterListStates.top().mbListElementOpened.empty())
 	{
 		// this implies that openListLevel was not called, so it is better to stop here
-		WRITER_DEBUG_MSG(("attempting to close an unexisting level\n"));
+		ODFGEN_DEBUG_MSG(("OdtGenerator: Attempting to close an unexisting level\n"));
 		return;
 	}
 	if (mWriterListStates.top().mbListElementOpened.top())
@@ -1093,7 +1092,7 @@ void OdtGenerator::openTableRow(const WPXPropertyList &propList)
 		return;
 	if (!mpImpl->mpCurrentTableStyle)
 	{
-		WRITER_DEBUG_MSG(("OdtGenerator::openTableRow called with no table\n"));
+		ODFGEN_DEBUG_MSG(("OdtGenerator::openTableRow called with no table\n"));
 		return;
 	}
 	if (propList["libwpd:is-header-row"] && (propList["libwpd:is-header-row"]->getInt()))
@@ -1131,7 +1130,7 @@ void OdtGenerator::openTableCell(const WPXPropertyList &propList)
 		return;
 	if (!mpImpl->mpCurrentTableStyle)
 	{
-		WRITER_DEBUG_MSG(("OdtGenerator::openTableCell called with no table\n"));
+		ODFGEN_DEBUG_MSG(("OdtGenerator::openTableCell called with no table\n"));
 		return;
 	}
 
@@ -1228,7 +1227,12 @@ void OdtGenerator::openFrame(const WPXPropertyList &propList)
 	// First, let's create a Frame Style for this box
 	TagOpenElement *frameStyleOpenElement = new TagOpenElement("style:style");
 	WPXString frameStyleName;
-	frameStyleName.sprintf("GraphicFrame_%i", mpImpl->miObjectNumber);
+	unsigned objectId = 0;
+	if (propList["libwpd:frame-name"])
+		objectId= mpImpl->_getObjectId(propList["libwpd:frame-name"]->getStr());
+	else
+		objectId= mpImpl->_getObjectId("");
+	frameStyleName.sprintf("GraphicFrame_%i", objectId);
 	frameStyleOpenElement->addAttribute("style:name", frameStyleName);
 	frameStyleOpenElement->addAttribute("style:family", "graphic");
 
@@ -1252,9 +1256,13 @@ void OdtGenerator::openFrame(const WPXPropertyList &propList)
 
 	if (propList["svg:width"])
 		frameStylePropertiesOpenElement->addAttribute("svg:width", propList["svg:width"]->getStr());
+	else if (propList["fo:min-width"])
+		frameStylePropertiesOpenElement->addAttribute("fo:min-width", propList["fo:min-width"]->getStr());
 
 	if (propList["svg:height"])
 		frameStylePropertiesOpenElement->addAttribute("svg:height", propList["svg:height"]->getStr());
+	else if (propList["fo:min-height"])
+		frameStylePropertiesOpenElement->addAttribute("fo:min-height", propList["fo:min-height"]->getStr());
 
 	if (propList["style:rel-width"])
 		frameStylePropertiesOpenElement->addAttribute("style:rel-width", propList["style:rel-width"]->getStr());
@@ -1283,7 +1291,7 @@ void OdtGenerator::openFrame(const WPXPropertyList &propList)
 	// Now, let's create an automatic style for this frame
 	TagOpenElement *frameAutomaticStyleElement = new TagOpenElement("style:style");
 	WPXString frameAutomaticStyleName;
-	frameAutomaticStyleName.sprintf("fr%i", mpImpl->miObjectNumber);
+	frameAutomaticStyleName.sprintf("fr%i", objectId);
 	frameAutomaticStyleElement->addAttribute("style:name", frameAutomaticStyleName);
 	frameAutomaticStyleElement->addAttribute("style:family", "graphic");
 	frameAutomaticStyleElement->addAttribute("style:parent-style-name", frameStyleName);
@@ -1317,14 +1325,15 @@ void OdtGenerator::openFrame(const WPXPropertyList &propList)
 	if (propList["fo:max-height"])
 		frameAutomaticStylePropertiesElement->addAttribute("fo:max-height", propList["fo:max-height"]->getStr());
 
-	// check if the frame has border, background attributes
+	// check if the frame has border, shadow, background attributes
 	static char const *(bordersString[])=
 	{
 		"fo:border","fo:border-top","fo:border-left","fo:border-bottom","fo:border-right",
 		"style:border-line-width","style:border-line-width-top","style:border-line-width-left",
-		"style:border-line-width-bottom","style:border-line-width-right"
+		"style:border-line-width-bottom","style:border-line-width-right",
+		"style:shadow"
 	};
-	for (int b = 0; b < 10; b++)
+	for (int b = 0; b < 11; b++)
 	{
 		if (propList[bordersString[b]])
 			frameAutomaticStylePropertiesElement->addAttribute(bordersString[b], propList[bordersString[b]]->getStr());
@@ -1350,10 +1359,7 @@ void OdtGenerator::openFrame(const WPXPropertyList &propList)
 
 	drawFrameOpenElement->addAttribute("draw:style-name", frameAutomaticStyleName);
 	WPXString objectName;
-	if (propList["libwpd:frame-name"])
-		objectName=mpImpl->_getFrameName(propList["libwpd:frame-name"]->getStr());
-	else
-		objectName=mpImpl->_getFrameName();
+	objectName.sprintf("Object%i", objectId);
 	drawFrameOpenElement->addAttribute("draw:name", objectName);
 	if (propList["text:anchor-type"])
 		drawFrameOpenElement->addAttribute("text:anchor-type", propList["text:anchor-type"]->getStr());
@@ -1371,9 +1377,13 @@ void OdtGenerator::openFrame(const WPXPropertyList &propList)
 
 	if (propList["svg:width"])
 		drawFrameOpenElement->addAttribute("svg:width", propList["svg:width"]->getStr());
+	else if (propList["fo:min-width"])
+		drawFrameOpenElement->addAttribute("fo:min-width", propList["fo:min-width"]->getStr());
 
 	if (propList["svg:height"])
 		drawFrameOpenElement->addAttribute("svg:height", propList["svg:height"]->getStr());
+	else if (propList["fo:min-height"])
+		drawFrameOpenElement->addAttribute("fo:min-height", propList["fo:min-height"]->getStr());
 
 	if (propList["style:rel-width"])
 		drawFrameOpenElement->addAttribute("style:rel-width", propList["style:rel-width"]->getStr());
@@ -1477,8 +1487,9 @@ void OdtGenerator::openTextBox(const WPXPropertyList &propList)
 	TagOpenElement *textBoxOpenElement = new TagOpenElement("draw:text-box");
 	if (propList["libwpd:next-frame-name"])
 	{
-		WPXString frameName("");
-		frameName = mpImpl->_getFrameName(propList["libwpd:next-frame-name"]->getStr());
+		WPXString frameName;
+		unsigned id=mpImpl->_getObjectId(propList["libwpd:next-frame-name"]->getStr());
+		frameName.sprintf("Object%i", id);
 		textBoxOpenElement->addAttribute("draw:chain-next-name", frameName);
 	}
 	mpImpl->mpCurrentContentElements->push_back(textBoxOpenElement);

@@ -1,3 +1,263 @@
+2013-12-03  David Tardon  <dtardon@redhat.com>  [9490b504f488d98f40138ea3bcad01f73fea744d]
+
+	add to NEWS
+
+	(cherry picked from commit 7fdad5e121c6e500ca87cce5d1123771cfa3f106)
+
+2013-12-03  David Tardon  <dtardon@redhat.com>  [37541771318bd764874cf03a14aa6fbd9d075ab4]
+
+	odp: move annotation namespace decl. to root element
+
+
+2013-12-03  David Tardon  <dtardon@redhat.com>  [da7a41d43ed5193c83e79ba9d63857a8e4ed15f8]
+
+	odp: fix annotation namespace
+
+
+2013-12-03  David Tardon  <dtardon@redhat.com>  [d1084496b2f4101a74672cf30558505f14ae1619]
+
+	odp: generate notes page just like libreoffice does
+
+
+2013-12-03  David Tardon  <dtardon@redhat.com>  [d554ad155675ed3d2d548fb15a59c580de1330fb]
+
+	odp: declare presentation namespace
+
+
+2013-12-03  David Tardon  <dtardon@redhat.com>  [8fb5c61f5ecd9cf7968bd2eb76c103facb853fed]
+
+	odp: close notes zone
+
+
+2013-12-03  David Tardon  <dtardon@redhat.com>  [8f36633505a2a644a9d70bba3f35c0216a1bd42c]
+
+	libwpd and libetonyek are not runtime deps, hide them
+
+
+2013-12-02  David Tardon  <dtardon@redhat.com>  [00a598659754c6a88d07cb188796f020b6c5c2f7]
+
+	prepare for a new release
+
+
+2013-12-02  David Tardon  <dtardon@redhat.com>  [cddeeb913dfbd936c251a55feb4b2a767e702c21]
+
+	odp: do not emulate layers by groups
+
+
+2013-12-02  David Tardon  <dtardon@redhat.com>  [50c2dd950dbd446ba7dfee3af2031594da6230c2]
+
+	odp: write out table styles in a way impress understands
+
+
+2013-12-02  David Tardon  <dtardon@redhat.com>  [96d76f18e3118c9baf66e2f3a8e87e07d671d346]
+
+	odp: actually write out table styles
+
+
+2013-12-02  David Tardon  <dtardon@redhat.com>  [4553afad7dc2ca2cdf017dedef5cc657d64a9f15]
+
+	odp: add missing namespace decl.
+
+
+2013-12-02  David Tardon  <dtardon@redhat.com>  [b059396eb16cdf530cc9f7f883fac2d811cd7b03]
+
+	odg/odp tables must be inside a draw:frame
+
+
+2013-10-30  David Tardon  <dtardon@redhat.com>  [9008d84be1eb0b3def0df39b069a309d54aa73ab]
+
+	use correct header for std::swap
+
+
+2013-10-24  David Tardon  <dtardon@redhat.com>  [453714dd3ebe8887fc3ad73467067f2a356b50fb]
+
+	update NEWS
+
+
+2013-10-23  David Tardon  <dtardon@redhat.com>  [4666c591e0434c1ffa7bdaad02984d9809a2b6f6]
+
+	spaces -> tab
+
+
+2013-10-22  David Tardon  <dtardon@redhat.com>  [1e0e6d17fae648e9dbbf5a06db58562322af8f9c]
+
+	add some documentation
+
+
+2013-10-22  David Tardon  <dtardon@redhat.com>  [01472ee411eaf621959e6c764528b84ece9b2ac2]
+
+	add support for generating API docs
+
+
+2013-10-22  David Tardon  <dtardon@redhat.com>  [6118d2b5e6916265b22a143f42ee04ac0a6a2ea8]
+
+	drop extra semicolon
+
+
+2013-10-22  David Tardon  <dtardon@redhat.com>  [77f20c9740c50643fad52c4240187b09ac19ffcf]
+
+	a ctor in abstract class does not make sense
+
+
+2013-10-22  David Tardon  <dtardon@redhat.com>  [2976b2e6c42be6aef1dfcdfcd9b969cad8ffe297]
+
+	libkeynote is dead. long live libetonyek!
+
+
+2013-10-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [3c5a1e2ca562b1905da717b22d2264aea0d4dc7f]
+
+	Depend on libkeynote in pkg-config file too
+
+
+2013-10-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [20166f1b22e19f5355caf748db08892fdcde12eb]
+
+	Make keynote hard dependency for the OdpGenerator
+
+
+2013-10-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [81627f109316611a6c2cd6153932f29c994bde4d]
+
+	Fix ODP mimetype
+
+
+2013-10-22  David Tardon  <dtardon@redhat.com>  [62f7207b333f09338e779523f52bb5a501387f12]
+
+	put generator state to a separate struct
+
+
+2013-10-22  David Tardon  <dtardon@redhat.com>  [45db4b6328587c7cfb73829c67793e982d8520a0]
+
+	add support for lists
+
+
+2013-10-22  David Tardon  <dtardon@redhat.com>  [3236b4200e4f01f2f9d17ba7b4ec28bd1ab364f9]
+
+	add support for notes
+
+
+2013-10-21  David Tardon  <dtardon@redhat.com>  [2ebb324dbfa87cfd3e3967d73678a59fd2bfe273]
+
+	add support for tables
+
+	(shamelessly stolen from OdtGenerator and then beaten into submission)
+
+2013-10-21  David Tardon  <dtardon@redhat.com>  [12ad16eb29934d5c6ca76ac1b870154af22b57ba]
+
+	add support for comments
+
+
+2013-10-21  David Tardon  <dtardon@redhat.com>  [b9d2031e6911a545ea9bf12b37e60f10e5f25c10]
+
+	fill NEWS
+
+
+2013-10-21  David Tardon  <dtardon@redhat.com>  [13553994421b1c41bd46433cf5ce3c9637ba384a]
+
+	improve README
+
+
+2013-10-21  David Tardon  <dtardon@redhat.com>  [3e6a8d00d8d1ab37a1a3b36d6c1067a4f73b54b4]
+
+	bump version
+
+
+2013-10-21  David Tardon  <dtardon@redhat.com>  [91635ce8c524fc777cd0841bbd695459c34110de]
+
+	factor out at least some common functions
+
+
+2013-10-21  David Tardon  <dtardon@redhat.com>  [e2cd287b2a10917a4eca01db07668c6fbf9ee04d]
+
+	add support for generating presentations (.odp)
+
+	I need this for libkeynote.
+
+2013-10-20  osnola  <alonso@loria.fr>  [39c9630649dd4cf4d8c6e146e685d0e3890a75b3]
+
+	OdtGenerator: add possibility to add a frame's shadow...
+
+
+2013-09-26  osnola  <alonso@loria.fr>  [4526c556b0244620ee7f813ed06ae2b2e3413520]
+
+	Add possibility to define another center of rotation for a textbox by using libwpg:rotate-cx/cy ; usefull in conjection with fo:min-width or fo:min-height...
+
+
+2013-09-26  osnola  <alonso@loria.fr>  [4a41d6ffdcc1253275432937b26540b71b189583]
+
+	Make code to manage linked textboxes more robust...
+
+
+2013-09-26  osnola  <alonso@loria.fr>  [6403ad9b15a373744b69dbb4422c00cd7e40b1df]
+
+	remove a cppcheck's warning: protect from potential memory leak.
+
+
+2013-09-02  osnola  <alonso@loria.fr>  [7ab6988d14b077fc2c2a03f878a717081667e0bb]
+
+	Correct another mistake...
+
+
+2013-09-01  osnola  <alonso@loria.fr>  [b0bd80a9a2abb93adad249ba9a437285cc9e3ec4]
+
+	Correction of a mistake.
+
+
+2013-08-31  osnola  <alonso@loria.fr>  [3344d4e2a673becd0f11464fc9e80a070bb349c5]
+
+	Try to normalize a little the ODFGEN_DEBUG_MSG messages...
+
+
+2013-08-31  osnola  <alonso@loria.fr>  [0648c43c83c59482e6985c3bf897bce16e5300be]
+
+	Replace WRITER_DEBUG_MSG by ODFGEN_DEBUG_MSG.
+
+
+2013-08-31  osnola  <alonso@loria.fr>  [8c1f4841f5c0cc0623283f9ef4500ff717f8b6e9]
+
+	Create a function to fill a graphic style properties element from a style and a gradient from writeGraphicStyle + use it in writeGraphicStyle and in startTextObject (to retrieve more property: border, potential pattern, ...)
+
+
+2013-08-30  osnola  <alonso@loria.fr>  [62499bb0753cab2b14b37fd9cef205182525eb57]
+
+	OdgGenerator drawPath: add commands H,V,T,S in bounding box computation + some sanity checks
+
+
+2013-08-30  osnola  <alonso@loria.fr>  [032ebc0ee064c6d7d2bc62ed05403cf36a4408ac]
+
+	OdgGenerator drawPath: simplify a little the bounding box computation's code +    add command H, V, T, S in the path generations and some sanity checks,    to be continued...
+
+
+2013-08-30  osnola  <alonso@loria.fr>  [5ca30373f237a7a58106a7f7bce539a3d0aaca0e]
+
+	Add some sanity checks...
+
+
+2013-08-30  osnola  <alonso@loria.fr>  [1e9f8d6da072406e7d2312899916b649b6eb4b24]
+
+	Arrow's style: retrieve draw:marker-start-center and draw:marker-end-center properties if there exist.
+
+
+2013-08-30  osnola  <alonso@loria.fr>  [d895f84845c585f7c5dc0fdfb3361f7043a28175]
+
+	Simplifying code: create a function to retrieve the document type...
+
+
+2013-08-01  laurent alonso  <alonso@saturne.loria.fr>  [46bd85c02b87733e56a982e4c131153395153ecb]
+
+	Add more table properties: - table:border-model in table definition to allow collapsing borders between cells, - style:border-line-width* in cell definition to allow borders with different widths...
+
+
+2013-06-14  Laurent Alonso  <laurent.alonso@inria.fr>  [95e0c6ff4eac31f48a0965311a4db591dda0a1d6]
+
+	Allow fo:min-width and fo:min-height in Writer frame
+
+
+2013-05-22  David Tardon  <dtardon@redhat.com>  [1a07cac39b076233876749b67c7a83db8a539943]
+
+	no need to check before delete
+
+	It throws coverity off the track, because it thinks the pointer can be
+	null and insists it should be checked at other places too.
+
 2013-05-22  Fridrich Štrba  <fridrich.strba@bluewin.ch>  [da4b4ba96d56f5557dc70d81443ef380c4e11fd2]
 
 	Bump version

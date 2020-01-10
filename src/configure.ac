@@ -7,7 +7,7 @@ AC_PREREQ([2.65])
 # ====================
 m4_define([libodfgen_version_major],[0])
 m4_define([libodfgen_version_minor],[0])
-m4_define([libodfgen_version_micro],[2])
+m4_define([libodfgen_version_micro],[4])
 m4_define([libodfgen_version],[libodfgen_version_major.libodfgen_version_minor.libodfgen_version_micro])
 
 # =============
@@ -47,6 +47,12 @@ PKG_CHECK_MODULES([WPG],[
 ])
 AC_SUBST([WPG_CFLAGS])
 AC_SUBST([WPG_LIGS])
+
+PKG_CHECK_MODULES([ETONYEK],[
+	libetonyek-0.0
+])
+AC_SUBST([ETONYEK_CFLAGS])
+AC_SUBST([ETONYEK_LIBS])
 
 # =================================
 # Libtool/Version Makefile settings
@@ -240,6 +246,23 @@ AS_IF([test "x$with_sharedptr" = "xboost"], [
 	])
 ])
 
+# =============
+# Documentation
+# =============
+AC_ARG_WITH(docs,
+    [AS_HELP_STRING([--without-docs], [Do not build documentation])],
+    [with_docs="$withval"],
+    [AS_IF([test "x$native_win32" = "xyes"], [with_docs=no], [with_docs=yes])]
+)
+AS_IF([test "x$with_docs" != "xno"], [
+    AC_PATH_PROG(DOXYGEN, [doxygen])
+    AS_IF([test -z "$DOXYGEN"], [
+        AC_MSG_WARN([*** Could not find doxygen in your PATH.])
+        AC_MSG_WARN([*** The documentation will not be built.])
+        build_docs=no
+    ], [build_docs=yes])
+], [build_docs=no])
+AM_CONDITIONAL([WITH_LIBEBOOK_DOCS], [test "x$build_docs" != "xno"])
 
 # =====================
 # Prepare all .in files
@@ -249,6 +272,8 @@ libodfgen-$LIBODFGEN_MAJOR_VERSION.$LIBODFGEN_MINOR_VERSION.pc:libodfgen.pc.in
 Makefile
 build/Makefile
 build/win32/Makefile
+docs/Makefile
+docs/doxygen/Makefile
 inc/Makefile
 inc/libodfgen/Makefile
 src/Makefile
@@ -263,6 +288,7 @@ AC_MSG_NOTICE([
 ==============================================================================
 Build configuration:
 	debug:           ${enable_debug}
+	docs:            ${build_docs}
 	shared_ptr:      ${with_sharedptr}
 	werror:          ${enable_werror}
 ==============================================================================
